@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Créer une sortie</h1>
+    <div class="col-md-9">
+
+        {{ form(sortieForm) }}
+
+
+        <a href="{{ path('lieu_creer') }}"><button type="button>">Ajouter un lieu</button></a>
+
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

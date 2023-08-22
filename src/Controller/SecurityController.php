@@ -15,10 +15,10 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class SecurityController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function login(Request $request, SessionInterface $session): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
 
-        $form = $this->createFormBuilder()
+        /*$form = $this->createFormBuilder()
             ->add('email', TextType::class,[
                 'constraints' => [
                     new NotBlank([
@@ -41,11 +41,13 @@ class SecurityController extends AbstractController
             $data = $form->getData();
             $session->set('user', $data);
 
-        }
+        }*/
 
-        return $this->render('register.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
+        return $this->render(':security:login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
     #[Route(path: '/logout', name: 'app_logout')]

@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Sorties{% endblock %}
+
+{% block body %}
+    <form action="{{ path('listeSorties') }}" method="GET">
+        <div class="grid grid-cols-6 gap-6">
+            <div class="col-start-2 col-end-4 ...">
+                <h2 class="text-2xl font-semibold">Filtrer les sorties</h2>
+            </div>
+
+            <div class="col-start-2 col-span-3 ...">
+                <div class="flex items-center space-x-4">
+                    <p class="w-1/4">Site :</p>
+                    <select name="site" class="select select-bordered w-3/4">
+                        <option value="null" selected>Sélectionnez un site</option>
+                        {% for id in 1..sites|length %}
+                            {% set site = sites[id - 1] %}
+                            <option value="{{ site.id }}">{{ site.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-start-2  col-span-3 ...">
+                <div class="flex items-center space-x-4">
+                    <p class="w-1/4">Le nom de la sortie contient :</p>
+                    <div class="w-3/4">
+                        <input name="search" class="input input-bordered w-full" placeholder="Chercher"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-start-2  col-end-4 ...">
+                <label for="start">Entre :</label>
+                <input type="date" id="start" name="start" value="{{ app.request.get('start') }}" min="2023-08-21"/>
+                <label for="end"> et </label>
+                <input type="date" id="end" name="end" value="{{ app.request.get('end') }}" min="2023-08-21"/>
+            </div>
+
+            <div class="col-start-4  col-span-6 ...">
+                <label class="flex items-center space-x-4">
+                    <input name="organisateur" type="checkbox" class="checkbox" />
+                    <p>Sorties dont je suis l'organisateur/trice</p>
+                </label>
+                <label class="flex items-center space-x-4">
+                    <input name="inscrit" type="checkbox" class="checkbox" />
+                    <p>Sorties auxquelles je suis inscrit/e</p>
+                </label>
+                <label class="flex items-center space-x-4">
+                    <input name="pasInscrit" type="checkbox" class="checkbox" />
+                    <p>Sorties auxquelles je ne suis pas inscrit/e</p>
+                </label>
+                <label class="flex items-center space-x-4">
+                    <input name="passees" type="checkbox" class="checkbox" />
+                    <p>Sorties passées</p>
+                </label>
+            </div>
+
+            <div class="col-start-5 col-end-6 ...">
+                <button type="submit" class="btn glass">Rechercher</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="grid grid-cols-6 gap-6">
+        <div class="col-start-2  col-end-6 ...">
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                    <tr>
+                        <th>Nom de la sortie</th>
+                        <th>Date de la sortie</th>
+                        <th>Cloture</th>
+                        <th>Durée</th>
+                        <th>Inscrits/Places</th>
+                        <th>État</th>
+                        <th>Organisateur</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sortie in sorties %}
+                        <tr>
+                            <td>{{ sortie.nom }}</td>
+                            <td>{{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</td>
+                            <td>{{ sortie.dateCloture|date('d/m/Y H:i') }}</td>
+                            <td>{{ sortie.duree }}h</td>
+                            <td>{{ sortie.nbInscriptionsMax }}</td>
+                            <td>{{ sortie.getEtatsNoEtat.libelle }}</td>
+                            <td>{{ sortie.getOrganisateur.prenom }} {{ sortie.getOrganisateur.nom }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-end-4 ...">
+{#            TODO ajouter ici le lien pour aller vers la page de création d'une sortie#}
+            <button class="btn glass">Créer une sortie</button>
+        </div>
+    </div>
+{% endblock %}
+
+

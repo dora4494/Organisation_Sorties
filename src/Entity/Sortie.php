@@ -38,14 +38,20 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-    #[ORM\Column]
-    private ?int $idOrganisateur = null;
 
-    #[ORM\Column]
-    private ?int $lieuxNoLieu = null;
+
+
 
     #[ORM\Column]
     private ?int $etatsNoEtat = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Participant $idOrganisateur = null;
+
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $lieuxNoLieu = null;
 
     public function getId(): ?int
     {
@@ -148,29 +154,7 @@ class Sortie
         return $this;
     }
 
-    public function getIdOrganisateur(): ?int
-    {
-        return $this->idOrganisateur;
-    }
 
-    public function setIdOrganisateur(int $idOrganisateur): static
-    {
-        $this->idOrganisateur = $idOrganisateur;
-
-        return $this;
-    }
-
-    public function getLieuxNoLieu(): ?int
-    {
-        return $this->lieuxNoLieu;
-    }
-
-    public function setLieuxNoLieu(int $lieuxNoLieu): static
-    {
-        $this->lieuxNoLieu = $lieuxNoLieu;
-
-        return $this;
-    }
 
     public function getEtatsNoEtat(): ?int
     {
@@ -180,6 +164,30 @@ class Sortie
     public function setEtatsNoEtat(int $etatsNoEtat): static
     {
         $this->etatsNoEtat = $etatsNoEtat;
+
+        return $this;
+    }
+
+    public function getIdOrganisateur(): ?Participant
+    {
+        return $this->idOrganisateur;
+    }
+
+    public function setIdOrganisateur(?Participant $idOrganisateur): static
+    {
+        $this->idOrganisateur = $idOrganisateur;
+
+        return $this;
+    }
+
+    public function getLieuxNoLieu(): ?Lieu
+    {
+        return $this->lieuxNoLieu;
+    }
+
+    public function setLieuxNoLieu(?Lieu $lieuxNoLieu): static
+    {
+        $this->lieuxNoLieu = $lieuxNoLieu;
 
         return $this;
     }

@@ -25,6 +25,10 @@ class Lieu
     #[ORM\Column(nullable: true)]
     private ?bool $longitude = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Ville $villesNoVille = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +78,18 @@ class Lieu
     public function setLongitude(?bool $longitude): static
     {
         $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    public function getVillesNoVille(): ?Ville
+    {
+        return $this->villesNoVille;
+    }
+
+    public function setVillesNoVille(?Ville $villesNoVille): static
+    {
+        $this->villesNoVille = $villesNoVille;
 
         return $this;
     }

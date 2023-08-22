@@ -38,10 +38,6 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-
-
-
-
     #[ORM\Column]
     private ?int $etatsNoEtat = null;
 
@@ -52,6 +48,14 @@ class Sortie
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Lieu $lieuxNoLieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $etats_no_etat = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Site $Site = null;
 
     public function getId(): ?int
     {
@@ -156,9 +160,9 @@ class Sortie
 
 
 
-    public function getEtatsNoEtat(): ?int
+    public function getEtatsNoEtat(): ?Etat
     {
-        return $this->etatsNoEtat;
+        return $this->etats_no_etat;
     }
 
     public function setEtatsNoEtat(int $etatsNoEtat): static
@@ -188,6 +192,18 @@ class Sortie
     public function setLieuxNoLieu(?Lieu $lieuxNoLieu): static
     {
         $this->lieuxNoLieu = $lieuxNoLieu;
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->Site;
+    }
+
+    public function setSite(?Site $Site): static
+    {
+        $this->Site = $Site;
 
         return $this;
     }

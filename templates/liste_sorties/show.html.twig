@@ -15,8 +15,8 @@
                     <select name="site" class="select select-bordered w-3/4">
                         <option value="null" selected>Sélectionnez un site</option>
                         {% for id in 1..sites|length %}
-                            {% set site = sites[id - 1] %}
-                            <option value="{{ site.id }}">{{ site.nom }}</option>
+                            {% set Site = sites[id - 1] %}
+                            <option value="{{ Site.id }}">{{ Site.nom }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -87,7 +87,7 @@
                             <td>{{ sortie.duree }}h</td>
                             <td>{{ sortie.nbInscriptionsMax }}</td>
                             <td>{{ sortie.getEtatsNoEtat.libelle }}</td>
-                            <td>{{ sortie.getOrganisateur.prenom }} {{ sortie.getOrganisateur.nom }}</td>
+                            <td>{{ sortie.getIdOrganisateur.prenom }} {{ sortie.getIdOrganisateur.nom }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

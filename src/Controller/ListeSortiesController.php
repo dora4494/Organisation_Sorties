@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Controller;
-
-use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\SiteRepository;
@@ -32,7 +30,14 @@ class ListeSortiesController extends AbstractController
         $startDate = $request->query->get('start');
         $endDate = $request->query->get('end');
         $sites = $siteRepository->findAll();
-        if ($searchTerm || $siteId || $organisateurFilter || $inscritFilter || $pasInscritFilter || $passeesFilter || $startDate || $endDate) {
+        if ($searchTerm ||
+            $siteId ||
+            $organisateurFilter ||
+            $inscritFilter ||
+            $pasInscritFilter ||
+            $passeesFilter ||
+            $startDate ||
+            $endDate) {
             $sorties = $sortieRepository->findBySearchTerm($searchTerm, $siteId, $organisateurFilter, $inscritFilter, $pasInscritFilter, $passeesFilter, $startDate, $endDate); //ajouter le $userId ici quand la connexion sera ok
         } else {
             $sorties = $sortieRepository->findAll();

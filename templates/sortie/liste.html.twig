@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+
+    <h1>Sorties</h1>
+
+    <div class="container_liste">
+        {% for sortie in lstSorties %}
+
+            <div >
+                <p>Nom de la sortie : {{sortie.nom}}</p>
+                <p>Date de la sortie : {{sortie.dateHeureDebut}}</p>
+                <p>Date de Clôture : {{sortie.dateCloture  }}</p>
+                <p>Nombre de places : {{sortie.nbInscriptionMax }}</p>
+                <p>Durée : {{sortie.duree}} minutes</p>
+                <p>Description et infos : {{sortie.descriptionInfos}}</p>
+                <p>Lieu : {{sortie.lieuxNoLieu.nom}}</p>
+                <p>Rue : {{sortie.lieuxNoLieu.rue}}</p>
+                <p>Code postal : {{sortie.lieuxNoLieu.villesNoVille.codePostal}}</p>
+
+
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

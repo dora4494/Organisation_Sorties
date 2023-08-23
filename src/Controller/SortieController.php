@@ -7,6 +7,7 @@ use App\Entity\Sortie;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
+use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +17,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/sortie', name: 'sortie')]
 class SortieController extends AbstractController
 {
+
+
+    #[Route('/liste', name: '_liste')]
+    public function liste(
+        SortieRepository $sortieRepository
+    ): Response
+    {
+        $lstSorties =  $sortieRepository->findAll();
+        return $this->render('sortie/liste.html.twig',
+            compact('lstSorties'));
+    }
+
+
+
     // Création d'une sortie
     #[Route('/creer', name: '_creer')]
     public function creer(
@@ -48,7 +63,7 @@ class SortieController extends AbstractController
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                return $this->redirectToRoute('sortie_index');
+                return $this->redirectToRoute('sortie_liste');
             }
 
 
@@ -59,7 +74,7 @@ class SortieController extends AbstractController
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                return $this->redirectToRoute('sortie_index');
+                return $this->redirectToRoute('sortie_liste');
             }
 
 

@@ -6,7 +6,7 @@ use App\Repository\ParticipantRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant
+class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -23,7 +23,7 @@ class Participant
     private ?string $pseudo = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $telephone = null;
+    private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
@@ -36,6 +36,14 @@ class Participant
 
     #[ORM\Column]
     private ?bool $actif = null;
+
+    public function __construct()
+    {
+    }
+
+    /*
+     * @param int|null $id
+     */
 
     public function getId(): ?int
     {
@@ -83,7 +91,7 @@ class Participant
         return $this->telephone;
     }
 
-    public function setTelephone(?int $telephone): static
+    public function setTelephone(?string $telephone): static
     {
         $this->telephone = $telephone;
 
@@ -102,7 +110,7 @@ class Participant
         return $this;
     }
 
-    public function getMotDePasse(): ?string
+    public function getPassword(): ?string
     {
         return $this->motDePasse;
     }
@@ -137,4 +145,19 @@ class Participant
 
         return $this;
     }
+
+
+
+    /*public function __construct(string $nom, string $prenom, string $pseudo, int $telephone, string $mail, string $motDePasse) {
+
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->pseudo = $pseudo;
+        $this->telephone = $telephone;
+        $this->mail = $mail;
+        $this->motDePasse = $motDePasse;
+        $this->administrateur = false;
+        $this->actif = true;
+    }*/
+
 }

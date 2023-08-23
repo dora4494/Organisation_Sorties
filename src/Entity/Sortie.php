@@ -15,7 +15,6 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     private ?string $nom = null;
@@ -61,7 +60,11 @@ class Sortie
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Etat $etatsNoEtat = null;
+    private ?Etat $etats_no_etat = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Site $Site = null;
 
     public function getId(): ?int
     {
@@ -165,6 +168,19 @@ class Sortie
     }
 
 
+
+    public function getEtatsNoEtat(): ?Etat
+    {
+        return $this->etats_no_etat;
+    }
+
+    public function setEtatsNoEtat(int $etatsNoEtat): static
+    {
+        $this->etatsNoEtat = $etatsNoEtat;
+
+        return $this;
+    }
+
     public function getIdOrganisateur(): ?Participant
     {
         return $this->idOrganisateur;
@@ -189,14 +205,14 @@ class Sortie
         return $this;
     }
 
-    public function getEtatsNoEtat(): ?Etat
+    public function getSite(): ?Site
     {
-        return $this->etatsNoEtat;
+        return $this->Site;
     }
 
-    public function setEtatsNoEtat(?Etat $etatsNoEtat): static
+    public function setSite(?Site $Site): static
     {
-        $this->etatsNoEtat = $etatsNoEtat;
+        $this->Site = $Site;
 
         return $this;
     }

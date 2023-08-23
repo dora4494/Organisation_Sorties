@@ -6,7 +6,6 @@
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         <link rel="stylesheet" href="../public/css/style.css">
         <link href="https://cdn.jsdelivr.net/npm/daisyui@3.5.1/dist/full.css" rel="stylesheet" type="text/css" />
-
         {% block stylesheets %}
         {% endblock %}
 
@@ -22,14 +21,14 @@
                 <label for="my-drawer" class="btn btn-square btn-ghost drawer-button">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </label>
-                <a class="btn btn-ghost normal-case text-xl" href="index">44Tonight</a>
+                <a class="btn btn-ghost normal-case text-xl" href="{{ path('accueil') }}">44Tonight</a>
             </div>
             <div class="drawer-side">
                 <label for="my-drawer" class="drawer-overlay"></label>
                 <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content">
                     <!-- Sidebar -->
-                    <li><a>Item 1</a></li>
-                    <li><a>Item 2</a></li>
+                    <li><a href="{{ path('listeSorties') }}">Liste des sorties</a></li>
+                    <li><a>Créer une sortie</a></li>
                 </ul>
             </div>
         </div>

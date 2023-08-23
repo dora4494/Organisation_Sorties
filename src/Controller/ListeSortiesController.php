@@ -68,13 +68,13 @@ class ListeSortiesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_liste_sorties_show', methods: ['GET'])]
-    public function show(Sortie $sortie): Response
-    {
-        return $this->render('liste_sorties/show.html.twig', [
-            'sortie' => $sortie,
-        ]);
-    }
+//    #[Route('/route/{id}', name: 'app_liste_sorties_show', methods: ['GET'])]
+//    public function show(Sortie $sortie): Response
+//    {
+//        return $this->render('liste_sorties/show.html.twig', [
+//            'sortie' => $sortie,
+//        ]);
+//    }
 
     #[Route('/{id}/edit', name: 'app_liste_sorties_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
@@ -94,14 +94,14 @@ class ListeSortiesController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_liste_sorties_delete', methods: ['POST'])]
-    public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($sortie);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_liste_sorties_index', [], Response::HTTP_SEE_OTHER);
-    }
+//    #[Route('/{id}', name: 'app_liste_sorties_delete', methods: ['POST'])]
+//    public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+//    {
+//        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+//            $entityManager->remove($sortie);
+//            $entityManager->flush();
+//        }
+//
+//        return $this->redirectToRoute('app_liste_sorties_index', [], Response::HTTP_SEE_OTHER);
+//    }
 }

@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Form\LieuType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,5 +38,22 @@ class LieuController extends AbstractController
         return $this->render('lieu/creer-lieu.html.twig', [
             'lieuForm' => $lieuForm->createView(),
         ]);
+    }
+
+    #[Route('/get-details/{lieuId}', name: '_get_details', methods: ['GET'])]
+    public function getDetails($lieuId, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $lieu = $entityManager->getRepository(Lieu::class)->find($lieuId);
+        if (!$lieu) {
+            return new JsonResponse(['error' => 'Lieu not found'], Response::HTTP_NOT_FOUND);
+        }
+        $lieuDetails = [
+            'rue' => $lieu->getRue(),
+            'ville' => [
+                'id' => $lieu->getVillesNoVille()->getId(),
+                'nom' => $lieu->getVillesNoVille()->getNom(),
+            ]
+        ];
+        return new JsonResponse($lieuDetails);
     }
 }

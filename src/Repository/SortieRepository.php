@@ -50,48 +50,39 @@ class SortieRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.Site', 'Site');
-
         if ($searchTerm) {
             $qb->andWhere('s.nom LIKE :searchTerm')
                 ->setParameter('searchTerm', '%' . $searchTerm . '%');
         }
-
         if ($siteId && $siteId !== 'null') {
             $qb->andWhere('s.Site = :siteId')
                 ->setParameter('siteId', $siteId);
         }
-
         // Filtres des cases à cocher
         if ($organisateurFilter) {
 //            $qb->andWhere('s.organisateur = :userId')
 //                ->setParameter('userId', $userId);
         }
-
         if ($inscritFilter) {
 //            $qb->andWhere(':user MEMBER OF s.participants')
 //                ->setParameter('user', $userId);
         }
-
         if ($nonInscritFilter) {
 //            $qb->andWhere(':user NOT MEMBER OF s.participants')
 //                ->setParameter('user', $userId);
         }
-
         if ($sortiesPasseesFilter) {
             $qb->andWhere('s.etatsNoEtat = :etatPasse')
                 ->setParameter('etatPasse', 5); // L'id de l'état "passé"
         }
-
         if ($startDate) {
             $qb->andWhere('s.dateHeureDebut >= :startDate')
                 ->setParameter('startDate', new \DateTime($startDate));
         }
-
         if ($endDate) {
             $qb->andWhere('s.dateHeureDebut <= :endDate')
                 ->setParameter('endDate', new \DateTime($endDate));
         }
-
         return $qb->getQuery()->getResult();
     }
 }

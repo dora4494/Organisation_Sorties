@@ -1,13 +1,50 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+
+{% endblock %}
+
 {% block body %}
     <h1>Créer une sortie</h1>
     <div class="col-md-9">
+        {{ form_start(sortieForm) }}
 
-        {{ form(sortieForm) }}
+        <div class="colonne1">
+            {{ form_row(sortieForm.nom) }}
+            {{ form_row(sortieForm.dateHeureDebut) }}
+            {{ form_row(sortieForm.dateCloture) }}
+            {{ form_row(sortieForm.duree) }}
 
 
-        <a href="{{ path('lieu_creer') }}"><button type="button>">Ajouter un lieu</button></a>
+        </div>
+
+        <div class="colonne2">
+            {{ form_row(sortieForm.nbInscriptionsMax) }}
+            {{ form_row(sortieForm.descriptionInfos) }}
+        </div>
+
+        <div class="colonne2-lieu">
+            {{ form_row(sortieForm.lieuxNoLieu) }}
+
+        </div>
+
+
+    </div>
+
+
+
+        <div>
+
+        <a href="{{ path('lieu_creer') }}"><button type="button">Ajouter un lieu</button></a>
+
+        {{ form_widget(sortieForm.enregistrer) }}
+        {{ form_widget(sortieForm.publier) }}
+            {{form_end(sortieForm)}}
+    </div>
+
+
+
+
 
     </div>
 
@@ -16,7 +53,4 @@
 
 {% endblock %}
 
-{% block title %}
-
-{% endblock %}
 

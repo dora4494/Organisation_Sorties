@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SortieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -15,18 +16,26 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+
+   #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+   #[Assert\NotBlank]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(0)]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $dateCloture = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(0)]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 500, nullable: true)]
@@ -38,8 +47,7 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
-    #[ORM\Column]
-    private ?int $etatsNoEtat = null;
+
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -47,6 +55,7 @@ class Sortie
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
     private ?Lieu $lieuxNoLieu = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]

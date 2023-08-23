@@ -23,7 +23,7 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
     private ?string $pseudo = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $telephone = null;
+    private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
@@ -91,7 +91,7 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
         return $this->telephone;
     }
 
-    public function setTelephone(?int $telephone): static
+    public function setTelephone(?string $telephone): static
     {
         $this->telephone = $telephone;
 

@@ -14,9 +14,11 @@ class Lieu
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 30, nullable: true)]
+    #[Assert\NotBlank]
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
@@ -93,4 +95,37 @@ class Lieu
 
         return $this;
     }
+
+
+
+
+/**
+ * @return Collection|Sortie[]
+ */
+public function getLieu(): Collection
+{
+    return $this->lieu;
+}
+
+public function addLieu(Sortie $lieu): self
+{
+    if (!$this->lieu->contains($lieu)) {
+        $this->lieu[] = $lieu;
+        $lieu->setLieux($this);
+    }
+
+    return $this;
+}
+
+public function removeLieu(Sortie $lieu): self
+{
+    if ($this->lieu->removeElement($lieu)) {
+        // set the owning side to null (unless already changed)
+        if ($lieu->getLieux() === $this) {
+            $lieu->setLieux(null);
+        }
+    }
+
+    return $this;
+}
 }

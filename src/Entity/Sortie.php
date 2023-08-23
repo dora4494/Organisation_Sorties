@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SortieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
@@ -14,19 +15,28 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+
+   #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+   #[Assert\NotBlank]
     private ?\DateTimeInterface $dateHeureDebut = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(0)]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\NotBlank]
     private ?\DateTimeInterface $dateCloture = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\GreaterThan(0)]
     private ?int $nbInscriptionsMax = null;
 
     #[ORM\Column(length: 500, nullable: true)]
@@ -40,18 +50,18 @@ class Sortie
 
 
 
-
-
-    #[ORM\Column]
-    private ?int $etatsNoEtat = null;
-
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $idOrganisateur = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank]
     private ?Lieu $lieuxNoLieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Etat $etatsNoEtat = null;
 
     public function getId(): ?int
     {
@@ -155,19 +165,6 @@ class Sortie
     }
 
 
-
-    public function getEtatsNoEtat(): ?int
-    {
-        return $this->etatsNoEtat;
-    }
-
-    public function setEtatsNoEtat(int $etatsNoEtat): static
-    {
-        $this->etatsNoEtat = $etatsNoEtat;
-
-        return $this;
-    }
-
     public function getIdOrganisateur(): ?Participant
     {
         return $this->idOrganisateur;
@@ -188,6 +185,18 @@ class Sortie
     public function setLieuxNoLieu(?Lieu $lieuxNoLieu): static
     {
         $this->lieuxNoLieu = $lieuxNoLieu;
+
+        return $this;
+    }
+
+    public function getEtatsNoEtat(): ?Etat
+    {
+        return $this->etatsNoEtat;
+    }
+
+    public function setEtatsNoEtat(?Etat $etatsNoEtat): static
+    {
+        $this->etatsNoEtat = $etatsNoEtat;
 
         return $this;
     }

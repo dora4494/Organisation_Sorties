@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Lieu;
 use App\Entity\Sortie;
+use App\Entity\Ville;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -21,13 +22,15 @@ class SortieType extends AbstractType
                 'label' => 'Date et heure de la sortie : '
             ])
             ->add('dateCloture', null, [
-                'label' => "Date limite d'inscription : "
+                'label' => "Date limite d'inscription : ",
+                'attr'=>['min'=>0]
             ])
             ->add('nbInscriptionsMax', null, [
                 'label' => 'Nombre de places : '
             ])
             ->add('duree', null, [
-                'label' => 'Durée : '
+                'label' => 'Durée (minutes) : ',
+                'attr'=>['min'=>0]
             ])
             ->add('descriptionInfos', null, [
                 'label' => 'Description et infos : '
@@ -47,15 +50,15 @@ class SortieType extends AbstractType
             ->add('enregistrer', SubmitType::class, [
                 'label' => 'Enregistrer'
             ])
-/*
+
             ->add('publier', SubmitType::class, [
                 'label' => 'Publier la sortie'
             ])
-
-            ->add('annuler', SubmitType::class, [
-                'label' => 'Annuler'
-            ])
-*/
+ /*
+                        ->add('annuler', SubmitType::class, [
+                            'label' => 'Annuler'
+                        ])
+            */
         ;
     }
 

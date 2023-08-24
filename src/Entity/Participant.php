@@ -6,13 +6,19 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
-class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
+class Participant implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -32,8 +38,8 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
     #[ORM\Column(length: 255)]
     private ?string $motDePasse = null;
 
-    #[ORM\Column]
-    private ?bool $administrateur = null;
+  /*  #[ORM\Column]
+    private ?bool $administrateur = null;*/
 
     #[ORM\Column]
     private ?bool $actif = null;
@@ -127,7 +133,7 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
         return $this;
     }
 
-    public function isAdministrateur(): ?bool
+   /* public function isAdministrateur(): ?bool
     {
         return $this->administrateur;
     }
@@ -137,7 +143,7 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
         $this->administrateur = $administrateur;
 
         return $this;
-    }
+    }*/
 
     public function isActif(): ?bool
     {
@@ -195,6 +201,39 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
     public function __toString(): string
     {
         return $this->nom . ' ' . $this->prenom;
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->mail;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
+
+        return $this;
     }
 
 }

@@ -188,10 +188,10 @@ class SortieController extends AbstractController
         EtatRepository         $etatRepository
     ): Response
     {
-
+/*     TODO:A DECOMMENTER UNE FOIS QUE LE LOGIN FONCTIONNERA
         if ($sortie->getIdOrganisateur() != $this->getUser()->getUserIdentifier()) {
             return $this->redirectToRoute('listeSorties');
-        }
+        }*/
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 

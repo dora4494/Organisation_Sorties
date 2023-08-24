@@ -25,7 +25,8 @@
                 <ul class="menu p-4 w-80 h-full bg-base-200 text-base-content">
                     <!-- Sidebar -->
                     <li><a href="{{ path('listeSorties') }}">Liste des sorties</a></li>
-                    <li><a>Créer une sortie</a></li>
+                    <li><a href="{{ path('sortie_creer') }}">Créer une sortie</a></li>
+                    <li><a>Exemple de lien</a></li>
                 </ul>
             </div>
         </div>
@@ -35,7 +36,7 @@
                     <div class="join">
                         <div>
                             <div>
-                                <input name="search" class="input input-bordered join-item" placeholder="Votre recherche"/>
+                                <input id="searchInput" name="search" class="input input-bordered join-item" placeholder="Envie d'une sortie ?" />
                             </div>
                         </div>
                         <div class="indicator">
@@ -53,17 +54,16 @@
                 <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
                     <li><a>Profil</a></li>
                     <li><a>Paramètres</a></li>
-                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        <a href="{{ path('app_logout') }}">Déconnexion</a>
-                    {% else %}
-                        <a href="{{ path('app_login') }}">Connexion</a>
-                    {% endif %}
+                    <li><a>Se déconnecter</a></li>
+                    <li><a href="{{ path('admin') }}">Dashboard Admin</a></li>
+
                 </ul>
             </div>
         </div>
     </div>
     <div class="bodyPosition">
-        {% block body %}{% endblock %}
+        {% block body %}
+        {% endblock %}
     </div>
 
     <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded">

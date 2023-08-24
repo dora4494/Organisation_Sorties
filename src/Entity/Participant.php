@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ParticipantRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface
@@ -36,8 +38,12 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
     #[ORM\Column]
     private ?bool $actif = null;
 
+    #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
+    private Collection $sorties;
+
     public function __construct()
     {
+        $this->sorties = new ArrayCollection();
     }
 
     /*
@@ -158,5 +164,32 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
         $this->administrateur = false;
         $this->actif = true;
     }*/
+
+    /**
+     * @return Collection<int, Sortie>
+     */
+    public function getSorties(): Collection
+    {
+        return $this->sorties;
+    }
+
+    public function addSorty(Sortie $sorty): static
+    {
+        if (!$this->sorties->contains($sorty)) {
+            $this->sorties->add($sorty);
+            $sorty->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSorty(Sortie $sorty): static
+    {
+        if ($this->sorties->removeElement($sorty)) {
+            $sorty->removeParticipant($this);
+        }
+
+        return $this;
+    }
 
 }

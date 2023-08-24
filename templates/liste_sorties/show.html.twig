@@ -97,8 +97,9 @@
         </div>
 
         <div class="col-start-2 col-end-4 ...">
-{#            TODO ajouter ici le lien pour aller vers la page de création d'une sortie#}
-            <button class="btn glass">Créer une sortie</button>
+            <a href="{{ path('sortie_creer') }}">
+                <button class="btn glass">Créer une sortie</button>
+            </a>
         </div>
     </div>
 {% endblock %}

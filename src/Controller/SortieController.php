@@ -110,16 +110,16 @@ class SortieController extends AbstractController
 
         if ($participantForm->isSubmitted() && $participantForm->isValid()) {
 
-            // Vérifier la date de cloture, le nb d'inscription max // TODO : Ajouter la vérifification de l'état 'ouvert
-            if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > count($sortie->getParticipants())) {
+            // Vérifier la date de cloture, le nb d'inscription max et le statut 'ouvert'
+            if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > count($sortie->getParticipants()) && $etat == 2) {
 
                 $participant = $participantRepository->find($this->getUser()->getUserIdentifier());
 
                 $sortie->addParticipant($participant);
 
-                // Si le nb d'inscrits est atteint
+                // Si le nb d'inscrits est atteint ou que la date de clôture est dépassée
 
-                if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count()) {
+                if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() == new DateTime('NOW')) {
                     $sortie->setEtatsNoEtat($etatRepository->find(3));
 
                 }
@@ -163,17 +163,20 @@ class SortieController extends AbstractController
             // Supprime la sortie du profil participant
             $participant->removeSorty($sortie);
 
+            // Vérifier que la date de limite d'inscription n'est pas dépassée
             if ($sortie->getDateCloture() > new \DateTime()) {
                 // Supprime le participant de la sortie
                 $sortie->removeParticipant($participant);
             }
+            if ($sortie->getEtatsNoEtat()->getId() == 3) {
+                $sortie->setEtatsNoEtat($entityManager->getRepository(Etat::class)->find(2));
+            }
+
             $entityManager->persist($sortie);
             $entityManager->flush();
             $this->addFlash('success', 'Vous êtes désinscrit-e');
         }
-            return $this->redirectToRoute('listeSorties');
-
-
+        return $this->redirectToRoute('listeSorties');
 
 
     }

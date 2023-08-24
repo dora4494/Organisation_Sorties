@@ -229,10 +229,58 @@ class SortieController extends AbstractController
     }
 
 
+    /*
+// Annuler une sortie
+    #[Route('/annuler/{sortie}', name: '_annuler')]
+    public function annuler(
+        EntityManagerInterface $entityManager,
+        Request                $requete,
+        Sortie                 $sortie,
+        EtatRepository         $etatRepository
+    ): Response
+    {
+            TODO:A DECOMMENTER UNE FOIS QUE LE LOGIN FONCTIONNERA
+                if ($sortie->getIdOrganisateur() != $this->getUser()->getUserIdentifier()) {
+                    return $this->redirectToRoute('listeSorties');
+                }
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+
+        $sortieForm->handleRequest($requete);
+
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+            // Si la sortie est "enregistrée"
+            if ($sortieForm->get('enregistrer')->isClicked()) {
+
+                $sortie->setEtatsNoEtat($etatRepository->find(1));
 
 
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                return $this->redirectToRoute('listeSorties');
+            }
 
 
+            // Si la sortie est "publiée"
+            if ($sortieForm->get('publier')->isClicked()) {
+                $sortie->setEtatsNoEtat($etatRepository->find(2));
+
+
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                return $this->redirectToRoute('listeSorties');
+            }
+
+
+        }
+        return $this->render('sortie/modifier-sortie.html.twig', [
+            'sortieForm' => $sortieForm->createView(),
+        ]);
+    }
+
+
+*/
 
 
 

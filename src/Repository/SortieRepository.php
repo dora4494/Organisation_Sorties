@@ -85,4 +85,13 @@ class SortieRepository extends ServiceEntityRepository
         }
         return $qb->getQuery()->getResult();
     }
+
+    public function findLatestSix()
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.dateHeureDebut', 'DESC')
+            ->setMaxResults(6)
+            ->getQuery()
+            ->getResult();
+    }
 }

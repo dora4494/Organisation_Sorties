@@ -3,31 +3,28 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% endif %}
+    <form method="post">
 
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
 
-
-        <label for="inputMail"></label><input type="email" value="{{ participant.mail }}" name="mail" id="inputMail" class="form-control" required>
-
-        <label for="inputPassword"></label><input type="password" name="motDePasse" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        {% if app.user and app.user.email %}
+        <label for="inputMail"> mail : </label><input type="email" value="{{ app.user.email }}" name="mail" id="inputMail" class="form-control" required>
+        {% else %}
+        <label for="inputMail"> mail : </label><input type="email" name="mail" id="inputMail" class="form-control" required>
+        {% endif %}
+        <label for="inputPassword"> mot de passe : </label><input type="password" name="motDePasse" id="inputPassword" class="form-control" autocomplete="current-password" required>
 
         <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
+               value="{{ csrf_token('authenticate', {'name': 'my_token'}) }}"
         >
 
         <button class="btn btn-lg btn-primary" type="submit">
             Sign in
         </button>
     </form>
+
+    <p>Vous n'avez pas de compte ?</p>
+    <a href="{{ path('app_register') }}">S'inscrire !</a>
 {% endblock %}
 

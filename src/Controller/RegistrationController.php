@@ -17,23 +17,27 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new Participant();
+        $user->setAdministrateur(0);
+        $user->setActif(1);
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
 
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            // encode the plain password
-//            $user->setMotDePasse(
-//                $userPasswordHasher->hashPassword(
-//                    $user,
-//                    $form->get('motDePasse')->getData()
-//                )
-//            );
-//
-//            $entityManager->persist($user);
-//            $entityManager->flush();
-//
-//            return $this->redirectToRoute('app_login');
-//        }
+        if ($form->isSubmitted() && $form->isValid()) {
+            // encode the plain password
+            $user->setMotDePasse(
+                $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('motDePasse')->getData()
+                )
+            );
+
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            setcookie('participant_email', $user->getMail(), time() + (3600 * 24 * 30), '/');
+
+            return $this->redirectToRoute('app_login');
+        }
 
         return $this->render('security/register.html.twig', [
             'registrationForm' => $form->createView(),

@@ -8,7 +8,7 @@
     <div class="bloc">
         <div class="hero min-h-screen">
             <div class="hero-content flex-col lg:flex-row-reverse">
-                <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" class="max-w-sm rounded-lg shadow-2xl" />
+{#                <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" class="max-w-sm rounded-lg shadow-2xl" />#}
                 <div>
                     <p class="text-8xl py-1 border-text text-sky-800">Bienvenu sur 44Tonight !</p>
                     <p class="text-4xl py-1 border-text text-sky-800">Participe, organise des sorties, découvre des activités.</p>
@@ -35,16 +35,16 @@
                         <div class="card w-96 bg-base-100 shadow-xl">
                             <figure>
                                 {% if sortie.getUrlPhoto() is not null %}
-                                    <img src="{{ sortie.getUrlPhoto() }}" alt="{{ sortie.getNom() }}" />
+                                    <img src="{{ sortie.getUrlPhoto() }}" alt="{{ sortie.getNom() }}" class="card-image"/>
                                 {% else %}
-                                    <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" alt="Image par défaut" />
+                                    <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" alt="Image par défaut" class="card-image"/>
                                 {% endif %}
                             </figure>
                             <div class="card-body">
                                 <h2 class="card-title">{{ sortie.getNom() }}</h2>
                                 <p>{{ sortie.getDescriptionInfos() }}</p>
                                 <div class="card-actions justify-end">
-                                    <a href="{{ path('sortie_details', {'sortie': sortie.getId()}) }}" class="btn glass">Voir</a>
+    <a href="{{ path('sortie_details', {'sortie': sortie.getId()}) }}" class="btn glass">Voir</a>
                                 </div>
                             </div>
                         </div>

@@ -53,5 +53,10 @@ body {
             1px 1px 0 #000;
 }
 
+.card-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+}
 
 

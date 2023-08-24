@@ -28,14 +28,11 @@ class SortieController extends AbstractController
     public function creer(
         EntityManagerInterface $entityManager,
         Request                $requete,
-        // ParticipantRepository $participantRepository,
-        //UserRepository $userRepository,
+         ParticipantRepository $participantRepository,
         EtatRepository         $etatRepository
     ): Response
     {
         $sortie = new Sortie();
-
-        //  $sortie->setIdOrganisateur($this->getUser()->getUserIdentifier());
 
         $sortieForm = $this->createForm(SortieType::class, $sortie);
 
@@ -47,26 +44,25 @@ class SortieController extends AbstractController
             if ($sortieForm->get('enregistrer')->isClicked()) {
 
                 $sortie->setEtatsNoEtat($etatRepository->find(1));
+                $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
+                $sortie->setIdOrganisateur($organisateur);
 
-                //   $organisateur = $participantRepository->find($this->getUser());
-                //  $sortie->setOrganisateur($organisateur);
-
-                //   $sortie->setOrganisateur($this->getUser()->getUserIdentifier());
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                return $this->redirectToRoute('sortie_liste');
+                return $this->redirectToRoute('listeSorties');
             }
 
 
             // Si la sortie est "publiée"
             if ($sortieForm->get('publier')->isClicked()) {
                 $sortie->setEtatsNoEtat($etatRepository->find(2));
-
+                $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
+                $sortie->setIdOrganisateur($organisateur);
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                return $this->redirectToRoute('sortie_liste');
+                return $this->redirectToRoute('listeSorties');
             }
 
 
@@ -181,6 +177,65 @@ class SortieController extends AbstractController
 
 
     }
+
+
+    // Modifier une sortie
+    #[Route('/modifier/{sortie}', name: '_modifier')]
+    public function modifier(
+        EntityManagerInterface $entityManager,
+        Request                $requete,
+        Sortie                 $sortie,
+        EtatRepository         $etatRepository
+    ): Response
+    {
+
+        if ($sortie->getIdOrganisateur() != $this->getUser()->getUserIdentifier()) {
+            return $this->redirectToRoute('listeSorties');
+        }
+
+        $sortieForm = $this->createForm(SortieType::class, $sortie);
+
+        $sortieForm->handleRequest($requete);
+
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+            // Si la sortie est "enregistrée"
+            if ($sortieForm->get('enregistrer')->isClicked()) {
+
+                $sortie->setEtatsNoEtat($etatRepository->find(1));
+
+
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                return $this->redirectToRoute('listeSorties');
+            }
+
+
+            // Si la sortie est "publiée"
+            if ($sortieForm->get('publier')->isClicked()) {
+                $sortie->setEtatsNoEtat($etatRepository->find(2));
+
+
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                return $this->redirectToRoute('listeSorties');
+            }
+
+
+        }
+        return $this->render('sortie/modifier-sortie.html.twig', [
+            'sortieForm' => $sortieForm->createView(),
+        ]);
+    }
+
+
+
+
+
+
+
+
+
 
 }
 

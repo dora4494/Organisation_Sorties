@@ -49,7 +49,6 @@ class Sortie
     private ?string $urlPhoto = null;
 
 
-
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Participant $idOrganisateur = null;

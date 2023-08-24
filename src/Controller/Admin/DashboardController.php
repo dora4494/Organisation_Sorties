@@ -56,11 +56,5 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('États', 'fas fa-check-square', Etat::class);
         yield MenuItem::linkToCrud('Inscriptions', 'fas fa-registered', Inscription::class);
 
-
-
-
-
-
-
     }
 }

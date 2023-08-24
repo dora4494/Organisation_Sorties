@@ -9,45 +9,47 @@
 
     <div class="container_liste">
 
-            <div >
-                <p>Nom de la sortie : {{sortie.nom}}</p>
-                <p>Date et heure de la sortie : {{sortie.dateHeureDebut | date('d/m/Y H:i:s')}}</p>
-                <p>Date limite d'inscription : {{sortie.getDateCloture | date('d/m/Y H:i:s')}}</p>
-                <p>Nombre de places : {{sortie.getNbInscriptionsMax }}</p>
-                <p>Durée : {{sortie.duree}} minutes</p>
-                <p>Description et infos : {{sortie.descriptionInfos}}</p>
-                <p>Lieu : {{sortie.lieuxNoLieu.nom}}</p>
-                <p>Rue : {{sortie.lieuxNoLieu.rue}}</p>
-                <p>Code postal : {{sortie.lieuxNoLieu.villesNoVille.codePostal}}</p>
-            </div>
+        <div>
+            <p>Nom de la sortie : {{ sortie.nom }}</p>
+            <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d/m/Y H:i:s') }}</p>
+            <p>Date limite d'inscription : {{ sortie.getDateCloture | date('d/m/Y H:i:s') }}</p>
+            <p>Nombre de places : {{ sortie.getNbInscriptionsMax }}</p>
+            <p>Durée : {{ sortie.duree }} minutes</p>
+            <p>Description et infos : {{ sortie.descriptionInfos }}</p>
+            <p>Lieu : {{ sortie.lieuxNoLieu.nom }}</p>
+            <p>Rue : {{ sortie.lieuxNoLieu.rue }}</p>
+            <p>Code postal : {{ sortie.lieuxNoLieu.villesNoVille.codePostal }}</p>
+        </div>
 
     </div>
 
     <h2>Liste des participants inscrits : </h2>
 
-        <table>
+    <table>
 
-            <tr>
-                <th>Pseudo</th>
-                <th>Nom</th>
-            </tr>
+        <tr>
+            <th>Prénom</th>
+            <th>Nom</th>
+        </tr>
 
-            <tbody>
-            {% for participant in sortie.participants %}
+        <tbody>
+        {% for participant in sortie.participants %}
             <tr>
                 <td>{{ participant.prenom }}</td>
                 <td>{{ participant.nom }}</td>
             </tr>
-            {% endfor %}
-            </tbody>
+        {% endfor %}
+        </tbody>
 
 
+    </table>
+
+    <div class="guestForm">
+        {{ form(participantForm) }}
+    </div>
+
+    <a href="{{ path('sortie_desister', {'sortie': sortie.id}) }}" >Se désinscrire</a>
 
 
-
-
-
-        </table>
-    }
 
 {% endblock %}

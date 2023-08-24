@@ -192,4 +192,9 @@ class Participant implements \Symfony\Component\Security\Core\User\PasswordAuthe
         return $this;
     }
 
+    public function __toString(): string
+    {
+        return $this->nom . ' ' . $this->prenom;
+    }
+
 }

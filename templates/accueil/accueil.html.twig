@@ -6,8 +6,55 @@
 
 {% block body %}
     <div class="bloc">
+        <div class="hero min-h-screen">
+            <div class="hero-content flex-col lg:flex-row-reverse">
+{#                <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" class="max-w-sm rounded-lg shadow-2xl" />#}
+                <div>
+                    <p class="text-8xl py-1 border-text text-sky-800">Bienvenu sur 44Tonight !</p>
+                    <p class="text-4xl py-1 border-text text-sky-800">Participe, organise des sorties, découvre des activités.</p>
+                    <p class="text-4xl py-4 border-text text-sky-800">Tout ça gratuitement et le site le restera !</p>
+                    <button class="btn bg-sky-800 text-white">S'inscrire</button>
+                    <button class="btn bg-sky-800 text-white">Se connecter</button>
+                    <a class="btn bg-sky-800 text-white" href="{{ path('listeSorties') }}">Voir les sorties</a>
+
+                </div>
+            </div>
+        </div>
         <video autoplay="autoplay" loop muted="muted">
             <source src="{{ asset('video/finalVideoBackground2-highlight.mp4') }}" type="video/mp4">
         </video>
     </div>
+    <div class="mx-auto py-10 bg-sky-800 text-white text-center text-2xl">
+        Depuis le lancement du site : {{ participants|length }} membres inscrits | {{ sorties|length }} sorties organisées
+    </div>
+    <div class="flex justify-center p-4 cartes backdrop-blur-md">
+        <div class="grid grid-cols-3 gap-4">
+            {% for ligne in sorties|batch(3) %}
+                {% for sortie in ligne %}
+                    {% if sortie.getEtatsNoEtat().getId() not in [3, 4, 5, 6] %}
+                        <div class="card w-96 bg-base-100 shadow-xl">
+                            <figure>
+                                {% if sortie.getUrlPhoto() is not null %}
+                                    <img src="{{ sortie.getUrlPhoto() }}" alt="{{ sortie.getNom() }}" />
+                                {% else %}
+                                    <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" alt="Image par défaut" />
+                                {% endif %}
+                            </figure>
+                            <div class="card-body">
+                                <h2 class="card-title">{{ sortie.getNom() }}</h2>
+                                <p>{{ sortie.getDescriptionInfos() }}</p>
+                                <div class="card-actions justify-end">
+                                    <a href="{{ path('sortie_details', {'id': sortie.getId()}) }}" class="btn glass">Voir</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+
+
+
+
 {% endblock %}

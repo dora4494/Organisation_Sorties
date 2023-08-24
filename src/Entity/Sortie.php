@@ -182,9 +182,9 @@ class Sortie
         return $this->etats_no_etat;
     }
 
-    public function setEtatsNoEtat(int $etatsNoEtat): static
+    public function setEtatsNoEtat(?Etat $etatsNoEtat): static
     {
-        $this->etatsNoEtat = $etatsNoEtat;
+        $this->etats_no_etat = $etatsNoEtat;
 
         return $this;
     }

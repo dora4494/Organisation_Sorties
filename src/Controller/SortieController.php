@@ -97,8 +97,8 @@ class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         ParticipantRepository  $participantRepository,
         EtatRepository         $etatRepository,
-        Etat                   $etat,
-        Participant            $participant
+//        Etat                   $etat,
+//        Participant            $participant
 
     ): Response
     {

@@ -56,9 +56,9 @@
                     <li><a>Paramètres</a></li>
                     <li><a href="{{ path('admin') }}">Dashboard Admin</a></li>
                     {% if app.user %}
-                        <a href="{{ path('app_logout') }}">Log out</a>
+                        <li><a href="{{ path('app_logout') }}">Log out</a></li>
                     {% else %}
-                        <a href="{{ path('app_login') }}">Log in</a>
+                        <li><a href="{{ path('app_login') }}">Log in</a></li>
                     {% endif %}
 
                 </ul>

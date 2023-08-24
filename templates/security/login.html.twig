@@ -5,6 +5,13 @@
 {% block body %}
 
     <form method="post">
+        {#{% if error %}
+        <div>
+            Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Se déconnecter</a>
+        </div>
+        {% endif %}#}
+
+        <div>{{ error }}</div>
 
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
 
@@ -13,7 +20,7 @@
         {% else %}
         <label for="inputMail"> mail : </label><input type="email" name="mail" id="inputMail" class="form-control" required>
         {% endif %}
-        <label for="inputPassword"> mot de passe : </label><input type="password" name="motDePasse" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        <label for="inputPassword"> mot de passe : </label><input type="password" name="motDePasse" id="inputPassword" class="form-control" required>
 
         <input type="hidden" name="_csrf_token"
                value="{{ csrf_token('authenticate', {'name': 'my_token'}) }}"

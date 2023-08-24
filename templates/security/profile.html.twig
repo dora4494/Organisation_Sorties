@@ -4,9 +4,9 @@
 
 {% block body %}
     {% if app.user %}
-        <h1>Profil de {{ app.user.userIdentifier }}</h1>
-        <p>Email : {{ app.user.email }}</p>
-        <p>Rôles : {{ user.roles|join(', ') }}</p>
+        <h1>Profil de {{ app.user.nom }}</h1>
+        <p>Email : {{ app.user.mail }}</p>
+        {#<p>Rôles : {{ user.roles|join(', ') }}</p>#}
     {% else %}
         <p>Vous n'êtes pas connecté</p>
     {% endif %}

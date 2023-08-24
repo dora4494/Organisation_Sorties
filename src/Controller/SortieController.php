@@ -160,7 +160,7 @@ class SortieController extends AbstractController
         if ($sortie->getDateHeureDebut() > new \DateTime()) {
 
             $participant = $participantRepository->find($this->getUser()->getUserIdentifier());
-            var_dump($participant);
+            //var_dump($participant);
             // Supprime la sortie du profil participant
             $participant->removeSorty($sortie);
 

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Etat;
 use App\Entity\Participant;
 use App\Entity\Sortie;
+use App\Form\AnnulerSortieType;
 use App\Form\ParticipantType;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
@@ -146,11 +147,11 @@ class SortieController extends AbstractController
     public function desister(
         EntityManagerInterface $entityManager,
         ParticipantRepository  $participantRepository,
-        Sortie                 $sortie,
        // Participant            $participant,
         SortieRepository       $sortieRepository
     ): Response
     {
+        $sortie = new Sortie();
 
         // Vérifier que la sortie n'a pas débuté et que la date de limite d'inscription n'est pas dépassée
         if ($sortie->getDateHeureDebut() > new \DateTime()) {
@@ -227,6 +228,44 @@ class SortieController extends AbstractController
             'sortieForm' => $sortieForm->createView(),
         ]);
     }
+
+
+
+// Annuler une sortie
+    #[Route('/annuler/{sortie}', name: '_annuler')]
+    public function annuler(
+        EntityManagerInterface $entityManager,
+        Request                $requete,
+        Sortie                 $sortie,
+        EtatRepository         $etatRepository
+    ): Response
+    {
+        $annulerSortieForm = $this->createForm(AnnulerSortieType::class, $sortie);
+
+        $annulerSortieForm->handleRequest($requete);
+
+        if ($annulerSortieForm->isSubmitted() && $annulerSortieForm->isValid()) {
+
+
+            $sortie->setEtatsNoEtat($etatRepository->find(6));
+
+
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                return $this->redirectToRoute('listeSorties');
+            }
+
+        return $this->render('sortie/annuler.html.twig', [
+            'annulerSortieForm' => $annulerSortieForm->createView(),
+                "sortie" => $sortie,]);
+    }
+
+
+
+
+
+
+
 }
 
 

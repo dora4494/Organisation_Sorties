@@ -1,7 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     form_themes:
-        - '@SymfonyUXTwigComponent/form/iframe_layout.html.twig'
+        - 'form_table_layout.html.twig'
 
 
 when@test:

@@ -36,6 +36,9 @@ class SortieType extends AbstractType
                 'label' => 'Description et infos : '
             ])
 
+            ->add('Site', null, [
+                'label' => 'Site organisateur : '
+            ])
 
            // ->add('etatSortie')
            //->add('urlPhoto')

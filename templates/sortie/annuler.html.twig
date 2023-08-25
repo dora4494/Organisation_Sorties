@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
+
+    <h1>Annuler une sortie</h1>
+
+    <div class="container_liste">
+
+        <div>
+            <p>Nom de la sortie : {{ sortie.nom }}</p>
+            <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d/m/Y H:i:s') }}</p>
+            <p>Site : {{ sortie.getSite }}</p>
+
+            {{ form_start(annulerSortieForm) }}
+
+            <div >
+                {{ form_widget(annulerSortieForm.motifAnnulation) }}
+                <div >
+                    {{ form_widget(annulerSortieForm.enregistrer) }}
+
+                </div>
+                {{ form_end(annulerSortieForm) }}
+
+            </div>
+
+        </div>
+
+
+
+
+
+   {#  <a href="{{ path('sortie_desister', {'sortie': sortie.id}) }}" >Se désinscrire</a>#}
+
+
+
+        </div>
+{% endblock %}

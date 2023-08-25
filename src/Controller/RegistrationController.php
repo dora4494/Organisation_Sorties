@@ -35,7 +35,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            setcookie('participant_email', $user->getMail(), time() + (3600 * 24 * 30), '/');
+            /*setcookie('participant_email', $user->getMail(), time() + (3600 * 24 * 30), '/');*/
 
             return $this->redirectToRoute('app_login');
         }

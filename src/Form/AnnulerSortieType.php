@@ -15,7 +15,7 @@ class AnnulerSortieType extends AbstractType
         $builder
 
             ->add('motifAnnulation', null,[
-                'label' => 'Motif : '
+                'label' => "Motif : "
             ])
             ->add('enregistrer', SubmitType::class, [
                 'label' => 'Enregistrer'

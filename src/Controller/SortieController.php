@@ -17,7 +17,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\DateTime;
+//use Symfony\Component\Validator\Constraints\DateTime;
+use DateTime;
 
 #[Route('/sortie', name: 'sortie')]
 class SortieController extends AbstractController
@@ -45,8 +46,9 @@ class SortieController extends AbstractController
             if ($sortieForm->get('enregistrer')->isClicked()) {
 
                 $sortie->setEtatsNoEtat($etatRepository->find(1));
-                $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
-                $sortie->setIdOrganisateur($organisateur);
+
+
+                $sortie->setIdOrganisateur($participantRepository->find($this->getUser()));
 
 
                 $entityManager->persist($sortie);
@@ -57,9 +59,13 @@ class SortieController extends AbstractController
 
             // Si la sortie est "publiée"
             if ($sortieForm->get('publier')->isClicked()) {
+
                 $sortie->setEtatsNoEtat($etatRepository->find(2));
-                $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
-                $sortie->setIdOrganisateur($organisateur);
+
+                $sortie->setIdOrganisateur($participantRepository->find($this->getUser()));
+
+              //  $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
+               // $sortie->setIdOrganisateur($organisateur);
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
@@ -87,57 +93,47 @@ class SortieController extends AbstractController
 
 
     //  Inscription à une sortie
-    #[Route('/inscription/{sortie}', name: '_inscription', requirements: ["sortie" => "\d+"])]
+    #[Route('/inscription/{sortie}', name: '_inscription')]
     public function inscription(
-        Sortie                 $sortie,
+
         SortieRepository       $sortieRepository,
         Request                $request,
         EntityManagerInterface $entityManager,
         ParticipantRepository  $participantRepository,
         EtatRepository         $etatRepository,
-        //  Etat                   $etat,
-        // Participant            $participant
+        Sortie                  $sortie
 
     ): Response
     {
 
+
         $etat = $sortie->getEtatsNoEtat()->getId();
 
-    //    $participantForm = $this->createForm(ParticipantType::class);
-    //    $participantForm->handleRequest($request);
 
-      //  if ($participantForm->isSubmitted() && $participantForm->isValid()) {
+        // Vérifier la date de cloture, le nb d'inscription max et le statut 'ouvert'
+        if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() && $etat == 2) {
 
-            // Vérifier la date de cloture, le nb d'inscription max et le statut 'ouvert'
-            if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > count($sortie->getParticipants()) && $etat == 2) {
+            $participant = $participantRepository->find($this->getUser());
+            $sortie->addParticipant($participant);
 
-                $participant = $participantRepository->find($this->getUser()->getUserIdentifier());
+            // Si le nb d'inscrits est atteint ou que la date de clôture est dépassée
 
-                $sortie->addParticipant($participant);
-
-                // Si le nb d'inscrits est atteint ou que la date de clôture est dépassée
-
-                if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() == new DateTime('NOW')) {
-                    $sortie->setEtatsNoEtat($etatRepository->find(3));
-
-                }
-
-                $entityManager->persist($sortie);
-
-                $entityManager->flush();
-
-                return $this->redirectToRoute('listeSorties');
-
-            } else {
-                $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e");
+            if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() == new DateTime('NOW')) {
+                $sortie->setEtatsNoEtat($etatRepository->find(3));
             }
-      //  }
 
-        return $this->render('sortie/detail.html.twig', [
-            "sortie" => $sortie,
-           // "participantForm" => $participantForm->createView()
-        ]);
 
+            $entityManager->persist($sortie);
+
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Vous êtes inscrit-e à la sortie');
+            return $this->redirectToRoute('listeSorties');
+
+        } else {
+            $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e");
+            return $this->redirectToRoute('accueil');
+        }
 
     }
 

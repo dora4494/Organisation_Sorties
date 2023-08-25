@@ -22,6 +22,11 @@ security:
             logout:
                 path: app_logout
                 target: accueil
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
+                path: /
+                domain: ~
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

@@ -22,6 +22,11 @@
         {% endif %}
         <label for="inputPassword"> mot de passe : </label><input type="password" name="motDePasse" id="inputPassword" class="form-control" required>
 
+        <div>
+            <input type="checkbox" name="_remember_me" id="rememberMe" class="form-check-input">
+            <label for="rememberMe" class="form-check-label">Se souvenir de moi</label>
+        </div>
+
         <input type="hidden" name="_csrf_token"
                value="{{ csrf_token('authenticate', {'name': 'my_token'}) }}"
         >
@@ -33,5 +38,21 @@
 
     <p>Vous n'avez pas de compte ?</p>
     <a href="{{ path('app_register') }}">S'inscrire !</a>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const emailInput = document.getElementById("inputMail");
+            const storedEmail = localStorage.getItem("storedEmail");
+
+            // Check if the email is stored and not empty
+            if (storedEmail) {
+                emailInput.value = storedEmail;
+            }
+
+            // Add an event listener to update the stored email when the user types
+            emailInput.addEventListener("input", function() {
+                localStorage.setItem("storedEmail", emailInput.value);
+            });
+        });
+    </script>
 {% endblock %}
 

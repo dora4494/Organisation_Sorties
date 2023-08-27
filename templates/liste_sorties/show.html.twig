@@ -77,6 +77,7 @@
                         <th>Inscrits/Places</th>
                         <th>État</th>
                         <th>Organisateur</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -89,6 +90,7 @@
                             <td>{{ sortie.nbInscriptionsMax }}</td>
                             <td>{{ sortie.getEtatsNoEtat.libelle }}</td>
                             <td>{{ sortie.getIdOrganisateur.prenom }} {{ sortie.getIdOrganisateur.nom }}</td>
+                            <td> <a href="{{ path('sortie_details', {'sortie': sortie.id}) }}" >Afficher</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

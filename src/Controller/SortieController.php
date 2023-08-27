@@ -17,9 +17,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
-//use Symfony\Component\Validator\Constraints\DateTime;
 use DateTime;
+//use Symfony\Component\Validator\Constraints\DateTime;
+
 
 #[Route('/sortie', name: 'sortie')]
 class SortieController extends AbstractController
@@ -112,9 +112,11 @@ class SortieController extends AbstractController
 
         $etat = $sortie->getEtatsNoEtat()->getId();
 
+        $participant = $participantRepository->find($this->getUser());
 
-        // Vérifier la date de cloture, le nb d'inscription max et le statut 'ouvert'
-        if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() && $etat == 2) {
+
+        // Vérifier la date de cloture, le nb d'inscription max, le statut 'ouvert' et que le user ne soit pas l'organisateur
+        if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() && $etat == 2 && $participant !== $sortie->getIdOrganisateur()) {
 
             $participant = $participantRepository->find($this->getUser());
             $sortie->addParticipant($participant);
@@ -134,10 +136,14 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('listeSorties');
 
         } else {
-            $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e");
+            if ($participant === $sortie->getIdOrganisateur()) {
+                $this->addFlash("fail", "En tant qu'organisateur-trice, vous ne pouvez pas vous inscrire");
+            } else {
+                $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e");
+            }
             return $this->redirectToRoute('accueil');
-        }
 
+        }
     }
 
 
@@ -147,35 +153,40 @@ class SortieController extends AbstractController
         EntityManagerInterface $entityManager,
         ParticipantRepository  $participantRepository,
         // Participant            $participant,
-        SortieRepository       $sortieRepository
+        SortieRepository       $sortieRepository,
+        Sortie                 $sortie
     ): Response
     {
-        $sortie = new Sortie();
 
-        // Vérifier que la sortie n'a pas débuté
-        if ($sortie->getDateHeureDebut() > new \DateTime()) {
+        $participant = $participantRepository->find($this->getUser());
 
-            $participant = $participantRepository->find($this->getUser()->getUserIdentifier());
+        if ($sortie->getParticipants()->contains($participant)) {
 
-            // Supprime la sortie du profil participant
-            $participant->removeSorty($sortie);
 
-            // Vérifier que la date de limite d'inscription n'est pas dépassée
-            if ($sortie->getDateCloture() > new \DateTime()) {
-                // Supprime le participant de la sortie
-                $sortie->removeParticipant($participant);
+            // Vérifier que la sortie n'a pas débuté
+            if ($sortie->getDateHeureDebut() > new \DateTime()) {
+
+
+                // Supprime la sortie du profil participant
+                $participant->removeSorty($sortie);
+
+                // Vérifier que la date de limite d'inscription n'est pas dépassée
+                if ($sortie->getDateCloture() > new \DateTime()) {
+                    // Supprime le participant de la sortie
+                    $sortie->removeParticipant($participant);
+                }
+                if ($sortie->getEtatsNoEtat()->getId() == 3) {
+                    $sortie->setEtatsNoEtat($entityManager->getRepository(Etat::class)->find(2));
+                }
+
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                $this->addFlash('success', 'Vous êtes désinscrit-e');
             }
-            if ($sortie->getEtatsNoEtat()->getId() == 3) {
-                $sortie->setEtatsNoEtat($entityManager->getRepository(Etat::class)->find(2));
-            }
-
-            $entityManager->persist($sortie);
-            $entityManager->flush();
-            $this->addFlash('success', 'Vous êtes désinscrit-e');
+        } else {
+            $this->addFlash('error', 'Action impossible car vous n\'êtes pas inscrit-e');
         }
         return $this->redirectToRoute('listeSorties');
-
-
     }
 
 
@@ -186,7 +197,7 @@ class SortieController extends AbstractController
         Request                $requete,
         Sortie                 $sortie,
         EtatRepository         $etatRepository,
-        ParticipantRepository   $participantRepository
+        ParticipantRepository  $participantRepository
     ): Response
     {
 
@@ -224,8 +235,7 @@ class SortieController extends AbstractController
                 }
             }
 
-        }
-        else {
+        } else {
             $this->addFlash('fail', 'Action impossible');
             return $this->redirectToRoute('listeSorties');
         }
@@ -242,7 +252,7 @@ class SortieController extends AbstractController
         Request                $requete,
         Sortie                 $sortie,
         EtatRepository         $etatRepository,
-        ParticipantRepository   $participantRepository
+        ParticipantRepository  $participantRepository
     ): Response
     {
 
@@ -266,8 +276,7 @@ class SortieController extends AbstractController
                 $entityManager->flush();
                 return $this->redirectToRoute('listeSorties');
             }
-        }
-        else {
+        } else {
             $this->addFlash('fail', 'Action impossible');
             return $this->redirectToRoute('listeSorties');
         }
@@ -275,6 +284,127 @@ class SortieController extends AbstractController
             'annulerSortieForm' => $annulerSortieForm->createView(),
             "sortie" => $sortie,]);
     }
+
+    /*
+    // Changement "Etat" des sorties"
+    #[Route('/etat/', name: '_etat')]
+    public function etat(
+        EntityManagerInterface $entityManager,
+        Sortie                 $sortie,
+        EtatRepository         $etatRepository,
+        SortieRepository       $sortieRepository
+    ): Response
+    {
+
+        $lstSorties = $sortieRepository->findAll();
+        $cloneDateHeureDebut = clone $sortie->getDateHeureDebut();
+       $dateHeureFin = $cloneDateHeureDebut->modify('+' . $sortie->getDuree() . ' minutes');
+       $dateArchivage = $cloneDateHeureDebut->modify('+30 days');
+
+        foreach ($lstSorties as $s) {
+
+            // Passer de l'état "Clôturé" à "En cours" ou "Terminé"
+            if ($s->getDateHeureDebut() <= new DateTime('NOW')) {
+
+                // En cours
+                if ($dateHeureFin >= new DateTime()) { // pour convertir la durée en secondes
+                    $s->setEtatsNoEtat($etatRepository->find(4));
+
+                    // Terminée
+                } else {
+                    $s->setEtatsNoEtat($etatRepository->find(5));
+                }
+
+
+            }
+
+            // Archivée
+            if ($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) {
+                if ($dateArchivage >= new DateTime()) {
+                    $s->setEtatsNoEtat($etatRepository->find(7));
+                }
+            }
+
+
+            $entityManager->persist($s);
+            $entityManager->flush();
+
+        }
+        return $this->render('liste_sorties/show.html.twig');
+
+    }
+
+
+    #[Route('/etat/', name: '_etat')]
+    public function etat(
+        EntityManagerInterface $entityManager,
+        EtatRepository $etatRepository,
+        SortieRepository $sortieRepository
+    ): Response {
+
+    $lstSorties = $sortieRepository->findAll();
+
+foreach ($lstSorties as $s) {
+    $now = new DateTime('NOW');
+    $cloneDateHeureDebut = clone $s->getDateHeureDebut();
+    $dateHeureFin = $cloneDateHeureDebut->modify('+' . $s->getDuree() . ' minutes');
+    $dateArchivage = clone $s->getDateHeureDebut()->modify('+30 days');
+
+    if ($s->getDateHeureDebut() <= $now) {
+        if ($dateHeureFin <= $now) {
+            $s->setEtatsNoEtat($etatRepository->find(5)); // Terminée
+        } else {
+            $s->setEtatsNoEtat($etatRepository->find(4)); // En cours
+        }
+
+        // Vérifiez si l'état est "Clôturé" (5) ou "Annulé" (6) avant de passer à "Archivée" (7)
+        if (($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) && $dateArchivage <= $now) {
+            $s->setEtatsNoEtat($etatRepository->find(7)); // Archivée
+        }
+
+        $entityManager->persist($s);
+    }
+}
+
+$entityManager->flush();
+
+        return $this->render('liste_sorties/show.html.twig');
+    }
+*/
+
+
+// Supprimer une sortie - uniquement pour les sorties restées en état "enregistrée"
+    #[Route('/supprimer/{sortie}', name: '_supprimer')]
+    public function supprimer(
+        EntityManagerInterface $entityManager,
+        Sortie                 $sortie,
+        ParticipantRepository   $participantRepository,
+        EtatRepository          $etatRepository
+    ): Response
+    {
+
+        $participant = $participantRepository->find($this->getUser());
+
+        // Vérifier que le User est bien l'organisateur
+        if ($participant === $sortie->getIdOrganisateur() && $sortie->getEtatsNoEtat()->getId() == 1) {
+
+            // Modifie l'état en "supprimée"
+            $sortie->setEtatsNoEtat($etatRepository->find(8));
+            $participant->removeSorty($sortie);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            $this->addFlash('success', 'La sortie a été supprimée');
+        } else {
+            $this->addFlash('fail', 'Action impossible');
+        }
+
+        return $this->redirectToRoute('listeSorties');
+    }
+
+
+
+
+
 
 
 }

@@ -3,13 +3,16 @@
 namespace App\Controller;
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 
 class ListeSortiesController extends AbstractController
@@ -18,7 +21,9 @@ class ListeSortiesController extends AbstractController
     public function index(
         SortieRepository $sortieRepository,
         SiteRepository $siteRepository,
-        Request $request
+        Request $request,
+        EntityManagerInterface $entityManager,
+        EtatRepository $etatRepository,
     ): Response
     {
         $searchTerm = $request->query->get('search');
@@ -30,6 +35,8 @@ class ListeSortiesController extends AbstractController
         $startDate = $request->query->get('start');
         $endDate = $request->query->get('end');
         $sites = $siteRepository->findAll();
+
+
         if ($searchTerm ||
             $siteId ||
             $organisateurFilter ||

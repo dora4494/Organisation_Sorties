@@ -14,9 +14,12 @@ class Ville
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 10)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 5, max: 5)]
     private ?string $codePostal = null;
 
     public function getId(): ?int

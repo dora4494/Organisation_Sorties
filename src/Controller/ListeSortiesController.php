@@ -6,6 +6,7 @@ use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,6 +27,53 @@ class ListeSortiesController extends AbstractController
         EtatRepository $etatRepository,
     ): Response
     {
+
+
+        $lstSorties = $sortieRepository->findAll();
+
+        foreach ($lstSorties as $s) {
+            $now = new DateTime('NOW');
+           $dateHeureDebut = $s->getDateHeureDebut();
+           // Ajout de la durée à la date de début de la sortie
+            $dateHeureFin = date_add(clone $dateHeureDebut, date_interval_create_from_date_string($s->getDuree() . " minutes"));
+            // Ajout de 30 jours à la date de début de la sortie
+            $dateArchivage =date_add(clone $dateHeureDebut, date_interval_create_from_date_string("30 days"));
+            $etat = $s->getEtatsNoEtat()->getId();
+
+            // Passer de l'état "Clôturé" à "En cours" ou "Terminé"
+            if ($s->getDateHeureDebut() <= $now) {
+                if ($dateHeureFin >= $now) {
+                    // En cours
+                    $s->setEtatsNoEtat($etatRepository->find(4));
+                    // Terminée
+                } else {
+                    $s->setEtatsNoEtat($etatRepository->find(5));
+                }
+            }
+            // Archivée
+            if (($etat == 5 || $etat == 6) && $dateArchivage < $now) {
+                $s->setEtatsNoEtat($etatRepository->find(7));
+
+            }
+
+            // Clôturé
+            if ( $s->getDateCloture() < $now && $etat == 2) {
+                $s->setEtatsNoEtat($etatRepository->find(3));
+            }
+            $entityManager->persist($s);
+            }
+
+
+
+        $entityManager->flush();
+
+
+
+
+
+
+
+
         $searchTerm = $request->query->get('search');
         $siteId = $request->query->get('site');
         $organisateurFilter = $request->query->get('organisateur');

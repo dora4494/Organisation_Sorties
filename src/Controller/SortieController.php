@@ -123,7 +123,7 @@ class SortieController extends AbstractController
 
             // Si le nb d'inscrits est atteint ou que la date de clôture est dépassée
 
-            if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() == new DateTime('NOW')) {
+            if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() < new DateTime('NOW')) {
                 $sortie->setEtatsNoEtat($etatRepository->find(3));
             }
 

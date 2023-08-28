@@ -285,92 +285,7 @@ class SortieController extends AbstractController
             "sortie" => $sortie,]);
     }
 
-    /*
-    // Changement "Etat" des sorties"
-    #[Route('/etat/', name: '_etat')]
-    public function etat(
-        EntityManagerInterface $entityManager,
-        Sortie                 $sortie,
-        EtatRepository         $etatRepository,
-        SortieRepository       $sortieRepository
-    ): Response
-    {
 
-        $lstSorties = $sortieRepository->findAll();
-        $cloneDateHeureDebut = clone $sortie->getDateHeureDebut();
-       $dateHeureFin = $cloneDateHeureDebut->modify('+' . $sortie->getDuree() . ' minutes');
-       $dateArchivage = $cloneDateHeureDebut->modify('+30 days');
-
-        foreach ($lstSorties as $s) {
-
-            // Passer de l'état "Clôturé" à "En cours" ou "Terminé"
-            if ($s->getDateHeureDebut() <= new DateTime('NOW')) {
-
-                // En cours
-                if ($dateHeureFin >= new DateTime()) { // pour convertir la durée en secondes
-                    $s->setEtatsNoEtat($etatRepository->find(4));
-
-                    // Terminée
-                } else {
-                    $s->setEtatsNoEtat($etatRepository->find(5));
-                }
-
-
-            }
-
-            // Archivée
-            if ($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) {
-                if ($dateArchivage >= new DateTime()) {
-                    $s->setEtatsNoEtat($etatRepository->find(7));
-                }
-            }
-
-
-            $entityManager->persist($s);
-            $entityManager->flush();
-
-        }
-        return $this->render('liste_sorties/show.html.twig');
-
-    }
-
-
-    #[Route('/etat/', name: '_etat')]
-    public function etat(
-        EntityManagerInterface $entityManager,
-        EtatRepository $etatRepository,
-        SortieRepository $sortieRepository
-    ): Response {
-
-    $lstSorties = $sortieRepository->findAll();
-
-foreach ($lstSorties as $s) {
-    $now = new DateTime('NOW');
-    $cloneDateHeureDebut = clone $s->getDateHeureDebut();
-    $dateHeureFin = $cloneDateHeureDebut->modify('+' . $s->getDuree() . ' minutes');
-    $dateArchivage = clone $s->getDateHeureDebut()->modify('+30 days');
-
-    if ($s->getDateHeureDebut() <= $now) {
-        if ($dateHeureFin <= $now) {
-            $s->setEtatsNoEtat($etatRepository->find(5)); // Terminée
-        } else {
-            $s->setEtatsNoEtat($etatRepository->find(4)); // En cours
-        }
-
-        // Vérifiez si l'état est "Clôturé" (5) ou "Annulé" (6) avant de passer à "Archivée" (7)
-        if (($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) && $dateArchivage <= $now) {
-            $s->setEtatsNoEtat($etatRepository->find(7)); // Archivée
-        }
-
-        $entityManager->persist($s);
-    }
-}
-
-$entityManager->flush();
-
-        return $this->render('liste_sorties/show.html.twig');
-    }
-*/
 
 
 // Supprimer une sortie - uniquement pour les sorties restées en état "enregistrée"
@@ -403,7 +318,110 @@ $entityManager->flush();
 
 
 
+    // Lien vers le profil des personnes inscrites à une sortie
+    #[Route('/profile/{id}', name: 'app_profile_inscrit')]
+    public function profilInscrit(
+        int $id,
+        Sortie $sortie,
+        ParticipantRepository $participantRepository
+    ): Response
+    {
+        // Pour récupérer l'id du participant inscrit
+        $participant = $participantRepository->find($id);
 
+        return $this->render('profile/profil_inscrit.html.twig', [
+            'participant' => $participant
+        ]);
+    }
+
+
+
+    /*
+      // Changement "Etat" des sorties"
+      #[Route('/etat/', name: '_etat')]
+      public function etat(
+          EntityManagerInterface $entityManager,
+          Sortie                 $sortie,
+          EtatRepository         $etatRepository,
+          SortieRepository       $sortieRepository
+      ): Response
+      {
+
+          $lstSorties = $sortieRepository->findAll();
+          $cloneDateHeureDebut = clone $sortie->getDateHeureDebut();
+         $dateHeureFin = $cloneDateHeureDebut->modify('+' . $sortie->getDuree() . ' minutes');
+         $dateArchivage = $cloneDateHeureDebut->modify('+30 days');
+
+          foreach ($lstSorties as $s) {
+
+              // Passer de l'état "Clôturé" à "En cours" ou "Terminé"
+              if ($s->getDateHeureDebut() <= new DateTime('NOW')) {
+
+                  // En cours
+                  if ($dateHeureFin >= new DateTime()) { // pour convertir la durée en secondes
+                      $s->setEtatsNoEtat($etatRepository->find(4));
+
+                      // Terminée
+                  } else {
+                      $s->setEtatsNoEtat($etatRepository->find(5));
+                  }
+
+
+              }
+
+              // Archivée
+              if ($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) {
+                  if ($dateArchivage >= new DateTime()) {
+                      $s->setEtatsNoEtat($etatRepository->find(7));
+                  }
+              }
+
+
+              $entityManager->persist($s);
+              $entityManager->flush();
+
+          }
+          return $this->render('liste_sorties/show.html.twig');
+
+      }
+
+
+      #[Route('/etat/', name: '_etat')]
+      public function etat(
+          EntityManagerInterface $entityManager,
+          EtatRepository $etatRepository,
+          SortieRepository $sortieRepository
+      ): Response {
+
+      $lstSorties = $sortieRepository->findAll();
+
+  foreach ($lstSorties as $s) {
+      $now = new DateTime('NOW');
+      $cloneDateHeureDebut = clone $s->getDateHeureDebut();
+      $dateHeureFin = $cloneDateHeureDebut->modify('+' . $s->getDuree() . ' minutes');
+      $dateArchivage = clone $s->getDateHeureDebut()->modify('+30 days');
+
+      if ($s->getDateHeureDebut() <= $now) {
+          if ($dateHeureFin <= $now) {
+              $s->setEtatsNoEtat($etatRepository->find(5)); // Terminée
+          } else {
+              $s->setEtatsNoEtat($etatRepository->find(4)); // En cours
+          }
+
+          // Vérifiez si l'état est "Clôturé" (5) ou "Annulé" (6) avant de passer à "Archivée" (7)
+          if (($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) && $dateArchivage <= $now) {
+              $s->setEtatsNoEtat($etatRepository->find(7)); // Archivée
+          }
+
+          $entityManager->persist($s);
+      }
+  }
+
+  $entityManager->flush();
+
+          return $this->render('liste_sorties/show.html.twig');
+      }
+  */
 
 
 

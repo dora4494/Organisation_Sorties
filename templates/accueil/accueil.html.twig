@@ -4,6 +4,49 @@
     {{ parent()}} - Accueil
 {% endblock %}
 
+{% block javascripts %}
+    <script>
+        const keys = {
+            37: "left",
+            38: "up",
+            39: "right",
+            40: "down",
+            65: "a",
+            66: "b"
+        };
+        const konamiCode = ["up", "up", "down", "down", "left", "right", "left", "right", "b", "a"];
+
+        document.addEventListener("keydown", checkCode, false);
+        let keyCount = 0;
+        let timerId;
+        function checkCode(event) {
+            console.log(event.keyCode);
+            let keyPressed = keys[event.keyCode];
+            if (keyPressed === konamiCode[keyCount]){
+                keyCount++;
+                window.clearTimeout(timerId);
+                timerId = window.setTimeout(resetKeyState, 3000 )
+
+                if(keyCount ===konamiCode.length) {
+                    cheatCodeActivated();
+                    resetKeyState();
+                }
+            } else {
+                resetKeyState();
+            }
+        }
+        function cheatCodeActivated() {
+            alert("Défendez la terre !");
+            window.location.href = "{{ path('spaceInvaders') }}";
+        }
+        function resetKeyState() {
+            keyCount = 0;
+            window.clearTimeout(timerId);
+        }
+    </script>
+{% endblock %}
+
+
 {% block body %}
     <div class="bloc">
         <div class="hero min-h-screen">
@@ -53,8 +96,5 @@
             {% endfor %}
         </div>
     </div>
-
-
-
-
 {% endblock %}
+

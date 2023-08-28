@@ -33,5 +33,13 @@ class AccueilController extends AbstractController
             compact('sorties', 'participants')
         );
     }
+
+        #[Route('/spaceInvaders', name: 'spaceInvaders')]
+    public function konamiCode(): Response
+    {
+        return $this->render('accueil/spaceInvaders.html.twig', [
+            'controller_name' => 'AccueilController',
+        ]);
+    }
 }
 

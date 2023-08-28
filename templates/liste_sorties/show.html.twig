@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} - Sorties{% endblock %}
+{% block title %}{{ parent() }}/Sorties{% endblock %}
 
 {% block body %}
     <form action="{{ path('listeSorties') }}" method="GET">
@@ -76,7 +76,7 @@
                         <th>Durée</th>
                         <th>Inscrits/Places</th>
                         <th>État</th>
-                        <th>Organisateur</th>
+                        <th>Organisateur/trice</th>
                         <th>Actions</th>
                     </tr>
                     </thead>

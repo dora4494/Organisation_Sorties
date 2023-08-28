@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Sortie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
 
 /**
  * @extends ServiceEntityRepository<Sortie>
@@ -16,9 +17,13 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class SortieRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $security;
+
+    public function __construct(ManagerRegistry $registry, Security $security)
     {
         parent::__construct($registry, Sortie::class);
+        $this->security = $security;
+
     }
 
 //    /**
@@ -48,6 +53,8 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findBySearchTerm($searchTerm, $siteId, $organisateurFilter, $inscritFilter, $nonInscritFilter, $sortiesPasseesFilter, $startDate, $endDate)
     {
+        $userId = $this->security->getUser()->getId();
+
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.Site', 'Site');
         if ($searchTerm) {
@@ -60,20 +67,20 @@ class SortieRepository extends ServiceEntityRepository
         }
         // Filtres des cases à cocher
         if ($organisateurFilter) {
-//            $qb->andWhere('s.organisateur = :userId')
-//                ->setParameter('userId', $userId);
+            $qb->andWhere('s.idOrganisateur = :userId')
+                ->setParameter('userId', $userId);
         }
         if ($inscritFilter) {
-//            $qb->andWhere(':user MEMBER OF s.participants')
-//                ->setParameter('user', $userId);
+            $qb->andWhere(':user MEMBER OF s.participants')
+                ->setParameter('user', $userId);
         }
         if ($nonInscritFilter) {
-//            $qb->andWhere(':user NOT MEMBER OF s.participants')
-//                ->setParameter('user', $userId);
+            $qb->andWhere(':user NOT MEMBER OF s.participants')
+                ->setParameter('user', $userId);
         }
         if ($sortiesPasseesFilter) {
-            $qb->andWhere('s.etatsNoEtat = :etatPasse')
-                ->setParameter('etatPasse', 5); // L'id de l'état "passé"
+            $qb->andWhere('s.etats_no_etat = :etatPasse')
+                ->setParameter('etatPasse', 5); // 5 = L'id de l'état "passé"
         }
         if ($startDate) {
             $qb->andWhere('s.dateHeureDebut >= :startDate')

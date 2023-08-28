@@ -22,10 +22,10 @@ class Lieu
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $latitude = null;
+    private ?float $latitude = null;
 
     #[ORM\Column(nullable: true)]
-    private ?bool $longitude = null;
+    private ?float $longitude = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
@@ -60,24 +60,24 @@ class Lieu
         return $this;
     }
 
-    public function isLatitude(): ?bool
+    public function isLatitude(): ?float
     {
         return $this->latitude;
     }
 
-    public function setLatitude(?bool $latitude): static
+    public function setLatitude(?float $latitude): static
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function isLongitude(): ?bool
+    public function isLongitude(): ?float
     {
         return $this->longitude;
     }
 
-    public function setLongitude(?bool $longitude): static
+    public function setLongitude(?float $longitude): static
     {
         $this->longitude = $longitude;
 

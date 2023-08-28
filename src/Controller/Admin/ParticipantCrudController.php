@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Participant;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -29,7 +30,7 @@ class ParticipantCrudController extends AbstractCrudController
             IntegerField::new('telephone'),
             EmailField::new('mail'),
             TextField::new('motDePasse'),
-            BooleanField::new('administrateur'),
+            ArrayField::new('roles'),
             BooleanField::new('actif'),
         ];
     }

@@ -23,3 +23,10 @@ when@test:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+
+        mime_types:
+            json: [ 'application/json', 'application/x-json' ]
+            jpg: 'image/jpeg'
+            png: 'image/png'
+            # Ajoutez d'autres types MIME au besoin
+

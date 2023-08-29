@@ -8,7 +8,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
 class Participant implements PasswordAuthenticatedUserInterface, UserInterface
 {
@@ -46,6 +48,21 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
 
     #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
     private Collection $sorties;
+
+    #[ORM\Column]
+    private string $image;
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
 
     public function __construct()
     {
@@ -97,12 +114,12 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
         return $this;
     }
 
-    public function getTelephone(): ?int
+    public function getTelephone(): string
     {
         return $this->telephone;
     }
 
-    public function setTelephone(?string $telephone): static
+    public function setTelephone(string $telephone): static
     {
         $this->telephone = $telephone;
 

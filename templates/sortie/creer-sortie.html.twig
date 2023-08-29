@@ -6,19 +6,24 @@
 
 {% block body %}
     <h1>Créer une sortie</h1>
-    <div class="col-md-9">
+
+    <div class="container_form_sortie">
+
         {{ form_start(sortieForm) }}
-        <div class="colonne1">
-            {{ form_row(sortieForm.nom) }}
-            {{ form_row(sortieForm.dateHeureDebut) }}
-            {{ form_row(sortieForm.dateCloture) }}
-            {{ form_row(sortieForm.duree) }}
+
+        <div class="container_colonne_1">
+           <p> {{ form_row(sortieForm.nom) }}</p>
+            <p>{{ form_row(sortieForm.dateHeureDebut) }}</p>
+            <p> {{ form_row(sortieForm.dateCloture) }}</p>
+            <p> {{ form_row(sortieForm.duree) }}</p>
         </div>
-        <div class="colonne2">
-            {{ form_row(sortieForm.nbInscriptionsMax) }}
-            {{ form_row(sortieForm.descriptionInfos) }}
-            {{ form_row(sortieForm.Site) }}
+
+        <div class="container_colonne_2">
+            <p> {{ form_row(sortieForm.nbInscriptionsMax) }}</p>
+            <p> {{ form_row(sortieForm.descriptionInfos) }}</p>
+            <p> {{ form_row(sortieForm.Site) }}</p>
         </div>
+
         <div class="colonne2-lieu">
             {{ form_row(sortieForm.lieuxNoLieu, {'attr': {'class': 'lieu-select'}}) }}
             <div id="lieu-details">
@@ -26,9 +31,10 @@
                 <p>Ville: <span id="lieu-ville"></span></p>
             </div>
         </div>
+
         <div>
         <a href="{{ path('lieu_creer') }}"><button type="button">Ajouter un lieu</button></a>
-            <a href="{{ path('ville_creer') }}"><button type="button">Ajouter une ville</button></a>
+          {#   <a href="{{ path('ville_creer') }}"><button type="button">Ajouter une ville</button></a>#}
         {{ form_widget(sortieForm.enregistrer) }}
         {{ form_widget(sortieForm.publier) }}
             {{form_end(sortieForm)}}
@@ -65,4 +71,6 @@
             });
         });
     </script>
+
+    <a href="{{ path('listeSorties') }}"><button>Retour</button></a>
 {% endblock %}

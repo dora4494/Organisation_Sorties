@@ -51,7 +51,6 @@
     <div class="bloc">
         <div class="hero min-h-screen">
             <div class="hero-content flex-col lg:flex-row-reverse">
-{#                <img src="{{ asset('images/wallpaper/wallpaper.jpg') }}" class="max-w-sm rounded-lg shadow-2xl" />#}
                 <div>
                     <p class="text-8xl py-1 border-text text-sky-800">Bienvenue sur 44Tonight !</p>
                     <p class="text-4xl py-1 border-text text-sky-800">Participe, organise des sorties, découvre des activités.</p>
@@ -68,7 +67,18 @@
         </video>
     </div>
     <div class="mx-auto py-10 bg-sky-800 text-white text-center text-2xl">
-        Depuis le lancement du site : {{ participants|length }} membres inscrits | {{ sorties|length }} sorties organisées
+        <div class="stats shadow">
+            <div class="stat place-items-center">
+                <div class="stat-title">Membres inscrits :</div>
+                <div class="stat-value">{{ participants|length }}</div>
+                <div class="stat-desc">Depuis la création du site.</div>
+            </div>
+            <div class="stat place-items-center">
+                <div class="stat-title">Sorties créées :</div>
+                <div class="stat-value text-secondary">{{ sorties|length }}</div>
+                <div class="stat-desc text-secondary">Par les organisateurs de l'ENI !</div>
+            </div>
+        </div>
     </div>
     <div class="flex justify-center p-4 cartes backdrop-blur-md">
         <div class="grid grid-cols-3 gap-4">

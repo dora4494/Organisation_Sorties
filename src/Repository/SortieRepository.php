@@ -53,8 +53,10 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findBySearchTerm($searchTerm, $siteId, $organisateurFilter, $inscritFilter, $nonInscritFilter, $sortiesPasseesFilter, $startDate, $endDate)
     {
-        $userId = $this->security->getUser()->getId();
 
+        if ($this->security->getUser() !== null) {
+            $userId = $this->security->getUser()->getId();
+        }
         $qb = $this->createQueryBuilder('s')
             ->leftJoin('s.Site', 'Site');
         if ($searchTerm) {

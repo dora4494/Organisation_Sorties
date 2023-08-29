@@ -17,7 +17,10 @@ class SortieType extends AbstractType
     {
         $builder
             ->add('nom', null, [
-                'label' => 'Nom de la sortie : '
+                'label' => 'Nom de la sortie : ',
+                'attr' => [
+                    'placeholder' => 'ex : Cinéma',
+                    ]
             ])
             ->add('dateHeureDebut', null, [
                 'label' => 'Date et heure de la sortie : ',
@@ -43,7 +46,10 @@ class SortieType extends AbstractType
                 'attr'=>['min'=>0]
             ])
             ->add('descriptionInfos', null, [
-                'label' => 'Description et infos : '
+                'label' => 'Description et infos : ',
+                'attr' => [
+                    'placeholder' => 'ex : Je propose une sortie au cinéma pour voir le film ...',
+                ]
             ])
 
             ->add('Site', null, [

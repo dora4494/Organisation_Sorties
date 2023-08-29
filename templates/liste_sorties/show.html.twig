@@ -41,15 +41,15 @@
 
             <div class="col-start-4  col-span-6 ...">
                 <label class="flex items-center space-x-4">
-                    <input name="organisateur" type="checkbox" class="checkbox" />
+                    <input name="organisateur" type="checkbox" class="checkbox" {% if not app.user %}disabled{% endif %}/>
                     <p>Sorties dont je suis l'organisateur/trice</p>
                 </label>
                 <label class="flex items-center space-x-4">
-                    <input name="inscrit" type="checkbox" class="checkbox" />
+                    <input name="inscrit" type="checkbox" class="checkbox" {% if not app.user %}disabled{% endif %}/>
                     <p>Sorties auxquelles je suis inscrit/e</p>
                 </label>
                 <label class="flex items-center space-x-4">
-                    <input name="pasInscrit" type="checkbox" class="checkbox" />
+                    <input name="pasInscrit" type="checkbox" class="checkbox" {% if not app.user %}disabled{% endif %}/>
                     <p>Sorties auxquelles je ne suis pas inscrit/e</p>
                 </label>
                 <label class="flex items-center space-x-4">
@@ -59,10 +59,11 @@
             </div>
 
             <div class="col-start-5 col-end-6 ...">
-                <button type="submit" class="btn glass">Rechercher</button>
+                <button type="submit" class="btn glass bg-sky-800 text-white">Rechercher</button>
             </div>
         </div>
     </form>
+    <br>
 
     <div class="grid grid-cols-6 gap-6">
         <div class="col-start-2  col-end-6 ...">
@@ -100,10 +101,11 @@
 
         <div class="col-start-2 col-end-4 ...">
             <a href="{{ path('sortie_creer') }}">
-                <button class="btn glass">Créer une sortie</button>
+                <button class="btn glass bg-sky-800 text-white">Créer une sortie</button>
             </a>
         </div>
     </div>
+    <br>
 {% endblock %}
 
 

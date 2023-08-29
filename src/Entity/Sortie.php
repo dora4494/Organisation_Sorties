@@ -178,8 +178,6 @@ class Sortie
         return $this;
     }
 
-
-
     public function getEtatsNoEtat(): ?Etat
     {
         return $this->etats_no_etat;

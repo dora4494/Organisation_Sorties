@@ -1,82 +1,169 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %}{{ parent() }}/Détails{% endblock %}
 
 {% block link %}
+{#    pour la mini map#}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
 {% endblock %}
 
 {% block javascripts %}
+{#    pour la mini map#}
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
 {% endblock %}
 
 {% block body %}
-
-
-    <h1>Sorties</h1>
-
-    <div class="container_liste">
-
-        <div>
-            <p>Nom de la sortie : {{ sortie.nom }}</p>
-            <p>Date et heure de la sortie : {{ sortie.dateHeureDebut | date('d/m/Y H:i:s') }}</p>
-            <p>Date limite d'inscription : {{ sortie.getDateCloture | date('d/m/Y H:i:s') }}</p>
-            <p>Nombre de places : {{ sortie.getNbInscriptionsMax }}</p>
-            <p>Durée : {{ sortie.duree }} minutes</p>
-            <p>Description et infos : {{ sortie.descriptionInfos }}</p>
-            <p>Lieu : {{ sortie.lieuxNoLieu.nom }}</p>
-            <p>Rue : {{ sortie.lieuxNoLieu.rue }}</p>
-            <p>Code postal : {{ sortie.lieuxNoLieu.villesNoVille.codePostal }}</p>
+    <div class="grid grid-cols-6 gap-6">
+        <div class="col-start-2 col-end-4 ...">
+            <h2 class="text-2xl font-semibold">Sortie</h2>
         </div>
 
-        <div id="map" style="height: 33vh; max-width: 33%">
-            <script>
-                const latitude = {{ sortie.lieuxNoLieu.latitude }};
-                const longitude = {{ sortie.lieuxNoLieu.longitude }};
-                let map = L.map('map').setView([latitude, longitude], 13);
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-                L.marker([latitude, longitude]).addTo(map)
-                    .bindPopup('{{ sortie.lieuxNoLieu.nom }} : {{ sortie.lieuxNoLieu.rue }}, {{ sortie.lieuxNoLieu.villesNoVille.codePostal }} {{ sortie.lieuxNoLieu.villesNoVille.nom }}')
-                    .openPopup();
-            </script>
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Nom de la sortie : </p>
+                <p class="w-2/4">{{ sortie.nom }}</p>
+            </div>
         </div>
 
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Ville organisatrice : </p>
+                <p class="w-2/4">{{ sortie.getSite }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Date et heure de la sortie : </p>
+                <p class="w-2/4">{{ sortie.dateHeureDebut | date('d/m/Y H:i:s') }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Lieu :  </p>
+                <p class="w-2/4">{{ sortie.lieuxNoLieu.nom }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Date limite d'inscription : </p>
+                <p class="w-2/4">{{ sortie.getDateCloture | date('d/m/Y H:i:s') }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Rue :  </p>
+                <p class="w-2/4">{{ sortie.lieuxNoLieu.rue }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Nombre de places : </p>
+                <p class="w-2/4">{{ sortie.getNbInscriptionsMax }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Code postal :  </p>
+                <p class="w-2/4">{{ sortie.lieuxNoLieu.villesNoVille.codePostal }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Durée :</p>
+                <p class="w-2/4">{{ sortie.duree }} minutes</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Description et infos : </p>
+                <p class="w-2/4">{{ sortie.descriptionInfos }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2">
+            <div class="collapse collapse-plus bg-sky-800 text-white">
+                <input type="checkbox" id="participants-accordion" class="collapse-toggle" />
+                <div class="collapse-title text-xl font-medium cursor-pointer">
+                    Afficher la liste des participants
+                </div>
+                <div class="collapse-content">
+                    <div class="overflow-x-auto">
+                        <table class="table w-full">
+                            <thead>
+                            <tr>
+                                <th>Prénom</th>
+                                <th>Nom</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for participant in sortie.participants %}
+                                <tr>
+                                    <td>{{ participant.prenom }}</td>
+                                    <td>{{ participant.nom }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-start-4 col-span-2 ...">
+            <div id="map"  style="height: 43vh; width: 70vh">
+                {#                                script de la mini map#}
+
+            </div>
+        </div>
+
+        <div class="col-start-3 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <a href="{{ path('sortie_desister', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Se désinscrire</button></a>
+                <a href="{{ path('sortie_inscription', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">S'inscrire</button></a>
+                <a href="{{ path('sortie_modifier', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Modifier la sortie</button></a>
+                <a href="{{ path('sortie_annuler', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Annuler la sortie</button></a>
+                <a href="{{ path('sortie_supprimer', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Supprimer la sortie</button></a>
+            </div>
+        </div>
     </div>
+    <br>
 
-    <h2>Liste des participants inscrits : </h2>
-
-    <table>
-
-        <tr>
-            <th>Prénom</th>
-            <th>Nom</th>
-        </tr>
-
-        <tbody>
-        {% for participant in sortie.participants %}
-            <tr>
-                <td>{{ participant.prenom }}</td>
-                <td>{{ participant.nom }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-
-
-    </table>
-
-     <a href="{{ path('sortie_desister', {'sortie': sortie.id}) }}" >Se désinscrire</a>
-    <a href="{{ path('sortie_inscription', {'sortie': sortie.id}) }}" >S'inscrire</a>
-    <a href="{{ path('sortie_modifier', {'sortie': sortie.id}) }}" >Modifier la sortie</a>
-    <a href="{{ path('sortie_annuler', {'sortie': sortie.id}) }}" >Annuler la sortie</a>
-    <a href="{{ path('sortie_supprimer', {'sortie': sortie.id}) }}" >Supprimer la sortie</a>
-
-
+    <script>
+        const latitude = {{ sortie.lieuxNoLieu.latitude }};
+        const longitude = {{ sortie.lieuxNoLieu.longitude }};
+        let map = L.map('map').setView([latitude, longitude], 13);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 25,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup('{{ sortie.lieuxNoLieu.nom }} : {{ sortie.lieuxNoLieu.rue }}, {{ sortie.lieuxNoLieu.villesNoVille.codePostal }} {{ sortie.lieuxNoLieu.villesNoVille.nom }}')
+            .openPopup();
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('.collapse-title').click(function() {
+                const collapseContent = $(this).siblings('.collapse-content');
+                if (collapseContent.is(':visible')) {
+                    collapseContent.slideUp();
+                } else {
+                    $('.collapse-content').slideUp();
+                    collapseContent.slideDown();
+                }
+            });
+        });
+    </script>
 
 {% endblock %}

@@ -90,7 +90,7 @@
                             <td>{{ sortie.duree }}min</td>
                             <td>{{ sortie.nbInscriptionsMax }}</td>
                             <td>{{ sortie.getEtatsNoEtat.libelle }}</td>
-                            <td>{{ sortie.getIdOrganisateur.prenom }} {{ sortie.getIdOrganisateur.nom }}</td>
+                            <td><a href="{{ path('app_profile_inscrit', {'id': sortie.getIdOrganisateur.id}) }}">{{ sortie.getIdOrganisateur.prenom }} {{ sortie.getIdOrganisateur.nom }}</a></td>
                             <td> <a href="{{ path('sortie_details', {'sortie': sortie.id}) }}" >Afficher</a></td>
                         </tr>
                     {% endfor %}

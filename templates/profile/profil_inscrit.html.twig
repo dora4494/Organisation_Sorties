@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+
+        <h1>{{ participant.pseudo }}</h1>
+
+    <div class="container">
+        <p>Prénom : {{ participant.prenom }}</p>
+        <p>Nom : {{ participant.nom }}</p>
+        <p>Téléphone : {{participant.telephone }}</p>
+        <p>Email : {{ participant.mail }}</p>
+
+    </div>
+
+    <a href="{{ path('listeSorties') }}" >Retour</a>
+
+{% endblock %}
+

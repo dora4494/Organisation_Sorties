@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Ajouter une ville</h1>
+    <div class="col-md-9">
+
+        {{ form(villeForm) }}
+    </div>
+    <a href="{{ path('sortie_creer') }}"><button type="button"></button> Retour</a>
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+

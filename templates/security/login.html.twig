@@ -38,6 +38,8 @@
 
     <p>Vous n'avez pas de compte ?</p>
     <a href="{{ path('app_register') }}">S'inscrire !</a>
+    <p>Mot de passe oublié ?</p>
+    <a href="{{ path('app_forgot_password_request') }}">Le réinitialiser !</a>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const emailInput = document.getElementById("inputMail");

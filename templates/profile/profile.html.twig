@@ -4,7 +4,7 @@
 
 {% block body %}
     {% if app.user %}
-        <h1>Profil de {{ app.user.nom }}{{ " " }}{{ app.user.prenom }}</h1>
+        <h1>Profil de : {{ app.user.nom }}{{ " " }}{{ app.user.prenom }}</h1>
         <p>Pseudo : {{ app.user.pseudo }}</p>
         <p>Email : {{ app.user.mail }}</p>
         <p>Téléphone : {{ app.user.telephone }}</p>

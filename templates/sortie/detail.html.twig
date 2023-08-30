@@ -132,7 +132,7 @@
             <div class="flex items-center space-x-4">
                 <a href="{{ path('sortie_desister', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Se désinscrire</button></a>
                 <a href="{{ path('sortie_inscription', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">S'inscrire</button></a>
-                <a href="{{ path('sortie_modifier', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Modifier la sortie</button></a>
+                <a href="{{ path('sortie_modifier', {'sortie': sortie.id}) }}" ><button type="button" class="btn glass bg-sky-800 text-white">Modifier la sortie</button></a>
                 <a href="{{ path('sortie_annuler', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Annuler la sortie</button></a>
                 <a href="{{ path('sortie_supprimer', {'sortie': sortie.id}) }}" ><button class="btn glass bg-sky-800 text-white">Supprimer la sortie</button></a>
             </div>

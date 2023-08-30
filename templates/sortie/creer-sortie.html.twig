@@ -5,41 +5,108 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Créer une sortie</h1>
 
-    <div class="container_form_sortie">
+    {{ form_start(sortieForm) }}
+    <div class="grid grid-cols-6 gap-8">
 
-        {{ form_start(sortieForm) }}
-
-        <div class="container_colonne_1">
-           <p> {{ form_row(sortieForm.nom) }}</p>
-            <p>{{ form_row(sortieForm.dateHeureDebut) }}</p>
-            <p> {{ form_row(sortieForm.dateCloture) }}</p>
-            <p> {{ form_row(sortieForm.duree) }}</p>
+        <div class="col-start-2 col-end-4 ...">
+            <h2 class="text-2xl font-semibold">Créer une sortie</h2>
         </div>
 
-        <div class="container_colonne_2">
-            <p> {{ form_row(sortieForm.nbInscriptionsMax) }}</p>
-            <p> {{ form_row(sortieForm.descriptionInfos) }}</p>
-            <p> {{ form_row(sortieForm.Site) }}</p>
-        </div>
 
-        <div class="colonne2-lieu">
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.nom, 'Titre : ', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.nom, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.Site, 'Ville organisatrice : ', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.Site, {'attr': {'class': 'select select-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.dateHeureDebut, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.dateHeureDebut, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.dateCloture, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.dateCloture, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.nbInscriptionsMax, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.nbInscriptionsMax, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.duree, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.duree, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
             {{ form_row(sortieForm.lieuxNoLieu, {'attr': {'class': 'lieu-select'}}) }}
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
             <div id="lieu-details">
                 <p>Rue: <span id="lieu-rue"></span></p>
                 <p>Ville: <span id="lieu-ville"></span></p>
             </div>
+            </div>
         </div>
 
-        <div>
-        <a href="{{ path('lieu_creer') }}"><button type="button">Ajouter un lieu</button></a>
-          {#   <a href="{{ path('ville_creer') }}"><button type="button">Ajouter une ville</button></a>#}
-        {{ form_widget(sortieForm.enregistrer) }}
-        {{ form_widget(sortieForm.publier) }}
-            {{form_end(sortieForm)}}
+
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex flex-col space-y-2">
+                {{ form_label(sortieForm.descriptionInfos, '', {'label_attr': {'class': 'w-2/4'}}) }}
+                {{ form_widget(sortieForm.descriptionInfos, {'attr': {'class': 'input input-bordered w-full max-w-xs', 'style': 'width:100%; height:150px;'}}) }}
+            </div>
         </div>
+
+
+    <div class="col-start-4 col-span-2 ...">
+    <div class="flex items-center space-x-4">
+    <a href="{{ path('lieu_creer') }}"><button type="button" class="btn btn-active btn-accent">Ajouter un lieu</button></a>
     </div>
+    </div>
+
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+    {{ form_row(sortieForm.enregistrer, {'attr': {'class': 'btn glass bg-sky-800 text-white', 'type': 'submit', 'value': 'Enregistrer'}}) }}
+    {{ form_row(sortieForm.publier, {'attr': {'class': 'btn glass bg-sky-800 text-white', 'type': 'submit', 'value': 'Enregistrer'}}) }}
+    </div>
+
+        {{form_end(sortieForm)}}
+
+
+
+    </div>
+
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const lieuSelect = document.querySelector(".lieu-select");
@@ -72,5 +139,7 @@
         });
     </script>
 
-    <a href="{{ path('listeSorties') }}"><button>Retour</button></a>
+
 {% endblock %}
+
+

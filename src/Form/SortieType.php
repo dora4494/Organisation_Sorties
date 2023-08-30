@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
 use App\Entity\Ville;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,13 +18,12 @@ class SortieType extends AbstractType
     {
         $builder
             ->add('nom', null, [
-                'label' => 'Nom de la sortie : ',
                 'attr' => [
                     'placeholder' => 'ex : Cinéma',
                     ]
             ])
             ->add('dateHeureDebut', null, [
-                'label' => 'Date et heure de la sortie : ',
+                'label' => "Date et heure : ",
                 'widget' => 'single_text',
                 'html5' => true,
                 'attr' => [
@@ -53,7 +53,6 @@ class SortieType extends AbstractType
             ])
 
             ->add('Site', null, [
-                'label' => 'Site organisateur : '
             ])
 
            // ->add('etatSortie')
@@ -72,7 +71,7 @@ class SortieType extends AbstractType
             ])
 
             ->add('publier', SubmitType::class, [
-                'label' => 'Publier la sortie'
+                'label' => 'Publier'
             ])
  /*
                         ->add('annuler', SubmitType::class, [

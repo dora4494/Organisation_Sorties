@@ -54,7 +54,7 @@ class SortieController extends AbstractController
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                $this->addFlash('success', 'Sortie enregistrée');
+                $this->addFlash('success', 'Sortie enregistrée !');
                 return $this->redirectToRoute('listeSorties');
             }
 
@@ -71,7 +71,7 @@ class SortieController extends AbstractController
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                $this->addFlash('success', 'Sortie publiée');
+                $this->addFlash('success', 'Sortie publiée !');
                 return $this->redirectToRoute('listeSorties');
             }
 
@@ -132,16 +132,16 @@ class SortieController extends AbstractController
 
             $entityManager->flush();
 
-            $this->addFlash('success', 'Vous êtes inscrit-e à la sortie');
+            $this->addFlash('success', 'Vous êtes inscrit-e à la sortie !');
             return $this->redirectToRoute('listeSorties');
 
         } else {
             if ($participant === $sortie->getIdOrganisateur()) {
-                $this->addFlash("fail", "En tant qu'organisateur-trice, vous ne pouvez pas vous inscrire");
+                $this->addFlash("fail", "En tant qu'organisateur-trice, vous ne pouvez pas vous inscrire !");
             } else {
-                $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e");
+                $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e !");
             }
-            return $this->redirectToRoute('accueil');
+            return $this->redirectToRoute('listeSorties');
 
         }
     }
@@ -181,10 +181,10 @@ class SortieController extends AbstractController
 
                 $entityManager->persist($sortie);
                 $entityManager->flush();
-                $this->addFlash('success', 'Vous êtes désinscrit-e');
+                $this->addFlash('success', 'Vous êtes désinscrit-e !');
             }
         } else {
-            $this->addFlash('error', 'Action impossible car vous n\'êtes pas inscrit-e');
+            $this->addFlash('error', 'Action impossible car vous n\'êtes pas inscrit-e !');
         }
         return $this->redirectToRoute('listeSorties');
     }
@@ -236,7 +236,7 @@ class SortieController extends AbstractController
             }
 
         } else {
-            $this->addFlash('fail', 'Action impossible');
+            $this->addFlash('fail', 'Action impossible !');
             return $this->redirectToRoute('listeSorties');
         }
         return $this->render('sortie/modifier-sortie.html.twig', [
@@ -277,7 +277,7 @@ class SortieController extends AbstractController
                 return $this->redirectToRoute('listeSorties');
             }
         } else {
-            $this->addFlash('fail', 'Action impossible');
+            $this->addFlash('fail', 'Action impossible !');
             return $this->redirectToRoute('listeSorties');
         }
         return $this->render('sortie/annuler.html.twig', [
@@ -310,7 +310,7 @@ class SortieController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'La sortie a été supprimée');
         } else {
-            $this->addFlash('fail', 'Action impossible');
+            $this->addFlash('fail', 'Action impossible !');
         }
 
         return $this->redirectToRoute('listeSorties');
@@ -334,94 +334,6 @@ class SortieController extends AbstractController
         ]);
     }
 
-
-
-    /*
-      // Changement "Etat" des sorties"
-      #[Route('/etat/', name: '_etat')]
-      public function etat(
-          EntityManagerInterface $entityManager,
-          Sortie                 $sortie,
-          EtatRepository         $etatRepository,
-          SortieRepository       $sortieRepository
-      ): Response
-      {
-
-          $lstSorties = $sortieRepository->findAll();
-          $cloneDateHeureDebut = clone $sortie->getDateHeureDebut();
-         $dateHeureFin = $cloneDateHeureDebut->modify('+' . $sortie->getDuree() . ' minutes');
-         $dateArchivage = $cloneDateHeureDebut->modify('+30 days');
-
-          foreach ($lstSorties as $s) {
-
-              // Passer de l'état "Clôturé" à "En cours" ou "Terminé"
-              if ($s->getDateHeureDebut() <= new DateTime('NOW')) {
-
-                  // En cours
-                  if ($dateHeureFin >= new DateTime()) { // pour convertir la durée en secondes
-                      $s->setEtatsNoEtat($etatRepository->find(4));
-
-                      // Terminée
-                  } else {
-                      $s->setEtatsNoEtat($etatRepository->find(5));
-                  }
-
-
-              }
-
-              // Archivée
-              if ($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) {
-                  if ($dateArchivage >= new DateTime()) {
-                      $s->setEtatsNoEtat($etatRepository->find(7));
-                  }
-              }
-
-
-              $entityManager->persist($s);
-              $entityManager->flush();
-
-          }
-          return $this->render('liste_sorties/show.html.twig');
-
-      }
-
-
-      #[Route('/etat/', name: '_etat')]
-      public function etat(
-          EntityManagerInterface $entityManager,
-          EtatRepository $etatRepository,
-          SortieRepository $sortieRepository
-      ): Response {
-
-      $lstSorties = $sortieRepository->findAll();
-
-  foreach ($lstSorties as $s) {
-      $now = new DateTime('NOW');
-      $cloneDateHeureDebut = clone $s->getDateHeureDebut();
-      $dateHeureFin = $cloneDateHeureDebut->modify('+' . $s->getDuree() . ' minutes');
-      $dateArchivage = clone $s->getDateHeureDebut()->modify('+30 days');
-
-      if ($s->getDateHeureDebut() <= $now) {
-          if ($dateHeureFin <= $now) {
-              $s->setEtatsNoEtat($etatRepository->find(5)); // Terminée
-          } else {
-              $s->setEtatsNoEtat($etatRepository->find(4)); // En cours
-          }
-
-          // Vérifiez si l'état est "Clôturé" (5) ou "Annulé" (6) avant de passer à "Archivée" (7)
-          if (($s->getEtatsNoEtat()->getId() == 5 || $s->getEtatsNoEtat()->getId() == 6) && $dateArchivage <= $now) {
-              $s->setEtatsNoEtat($etatRepository->find(7)); // Archivée
-          }
-
-          $entityManager->persist($s);
-      }
-  }
-
-  $entityManager->flush();
-
-          return $this->render('liste_sorties/show.html.twig');
-      }
-  */
 
 
 

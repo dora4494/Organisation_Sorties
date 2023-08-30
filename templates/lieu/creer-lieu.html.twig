@@ -1,10 +1,203 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    {{ form_start(lieuForm) }}
+
+    <div class="grid grid-cols-6 gap-8">
+
+        <div class="col-start-2 col-end-4 ...">
+            <h2 class="text-2xl font-semibold">Ajouter un lieu</h2>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.nom, 'Nom * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.nom, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.rue, 'Rue * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.rue, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.villesNoVille, 'Ville * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.villesNoVille, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.latitude, 'Latitude : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.latitude, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.longitude, 'Longitude : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.longitude, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <a href="{{ path('ville_creer') }}"><button type="button" class="btn btn-active btn-accent">Ajouter une ville</button></a>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.enregistrer, 'Enregistrer : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.enregistrer, {'attr': {'class': 'btn glass bg-sky-800 text-white'}}) }}</p>
+                <a href="{{ path('sortie_creer') }}"><button type="button" class="btn glass bg-sky-800 text-white">Retour</button> </a>
+            </div>
+        </div>
+
+
+        {{form_end(lieuForm)}}
+
+
+    </div>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+{#
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    {{ form_start(lieuForm) }}
+
+    <div class="grid grid-cols-6 gap-8">
+
+        <div class="col-start-2 col-end-4 ...">
+            <h2 class="text-2xl font-semibold">Ajouter un lieu</h2>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.nom, 'Nom * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.nom, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.rue, 'Rue * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.rue, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.villesNoVille, 'Ville * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.villesNoVille, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.latitude, 'Latitude : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.latitude, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.longitude, 'Longitude : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.longitude, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(lieuForm.enregistrer, 'Enregistrer : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(lieuForm.enregistrer, {'attr': {'class': 'btn glass bg-sky-800 text-white'}}) }}</p>
+                <a href="{{ path('sortie_creer') }}"><button type="button" class="btn glass bg-sky-800 text-white">Retour</button> </a>
+            </div>
+        </div>
+
+
+        {{form_end(lieuForm)}}
+
+
+    </div>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
+#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+
+    <div class="grid grid-cols-6 gap-8">
+
+
     <h1>Ajouter un lieu</h1>
-    <div class="col-md-9">
 
         {{ form(lieuForm) }}
+
+
+
+
+
     </div>
     <a href="{{ path('sortie_creer') }}"><button type="button"></button> Retour</a>
 {% endblock %}
@@ -13,3 +206,4 @@
 
 {% endblock %}
 
+#}

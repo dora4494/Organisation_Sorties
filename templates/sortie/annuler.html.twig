@@ -4,6 +4,91 @@
 
 {% block body %}
 
+    {{ form_start(annulerSortieForm) }}
+
+    <div class="grid grid-cols-6 gap-6">
+
+        <div class="col-start-2 col-end-4 ...">
+            <h2 class="text-2xl font-semibold">Annuler une sortie</h2>
+        </div>
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Titre : </p>
+                <p class="w-2/4">{{ sortie.nom }}</p>
+            </div>
+        </div>
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Date et heure : </p>
+                <p class="w-2/4">{{ sortie.dateHeureDebut | date('d/m/Y H:i:s') }}</p>
+            </div>
+        </div>
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex flex-col">
+                {{ form_label(annulerSortieForm.motifAnnulation, 'Motif : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(annulerSortieForm.motifAnnulation, {'attr': {'class': 'input input-bordered w-full max-w-xs', 'style': 'width:100%; height:120px;'}}) }}</p>
+            </div>
+        </div>
+
+
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Ville organisatrice : </p>
+                <p class="w-2/4">{{ sortie.getSite }}</p>
+            </div>
+        </div>
+
+
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_row(annulerSortieForm.enregistrer, {'attr': {'class': 'btn glass bg-sky-800 text-white', 'type': 'submit', 'value': 'Enregistrer'}}) }}
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+        {{ form_end(annulerSortieForm) }}
+
+    </div>
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+
 
     <h1>Annuler une sortie</h1>
 
@@ -19,10 +104,10 @@
             {{ form_start(annulerSortieForm) }}
             <div>
                 <label>Motif :</label>
-            {{ form_widget(annulerSortieForm.motifAnnulation) }}
+                {{ form_widget(annulerSortieForm.motifAnnulation) }}
             </div>
             <div>
-            {{ form_widget(annulerSortieForm.enregistrer) }}
+                {{ form_widget(annulerSortieForm.enregistrer) }}
             </div>
             {{ form_end(annulerSortieForm) }}
         </div>
@@ -30,8 +115,9 @@
     </div>
 
 
-    {#  <a href="{{ path('sortie_desister', {'sortie': sortie.id}) }}" >Se désinscrire</a> #}
+
 
 
 
 {% endblock %}
+#}

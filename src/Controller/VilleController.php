@@ -31,7 +31,7 @@ class VilleController extends AbstractController
             $entityManager->persist($ville);
             $entityManager->flush();
 
-            return $this->redirectToRoute(('sortie_creer'));
+            return $this->redirectToRoute(('lieu_creer'));
         }
 
 return $this->render('ville/creer.html.twig', [

@@ -29,7 +29,7 @@ class LieuType extends AbstractType
                 'label' => 'Ville',
             ])
             ->add('enregistrer', SubmitType::class, [
-                'label' => 'Ajouter'
+                'label' => 'Valider'
             ])
         ;
     }

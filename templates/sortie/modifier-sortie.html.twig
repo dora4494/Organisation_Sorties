@@ -5,6 +5,179 @@
 {% endblock %}
 
 {% block body %}
+
+      {{ form_start(sortieForm) }}
+<div class="grid grid-cols-6 gap-8">
+
+    <div class="col-start-2 col-end-4 ...">
+        <h2 class="text-2xl font-semibold">Modifier une sortie</h2>
+    </div>
+
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.nom, 'Titre : ', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.nom, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.Site, 'Ville organisatrice : ', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.Site, {'attr': {'class': 'select select-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.dateHeureDebut, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.dateHeureDebut, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.dateCloture, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.dateCloture, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.nbInscriptionsMax, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.nbInscriptionsMax, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_label(sortieForm.duree, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            <p>{{ form_widget(sortieForm.duree, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+        </div>
+    </div>
+
+
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_row(sortieForm.lieuxNoLieu, {'attr': {'class': 'lieu-select'}}) }}
+        </div>
+    </div>
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            <div id="lieu-details">
+                <p>Rue: <span id="lieu-rue"></span></p>
+                <p>Ville: <span id="lieu-ville"></span></p>
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex flex-col space-y-2">
+            {{ form_label(sortieForm.descriptionInfos, '', {'label_attr': {'class': 'w-2/4'}}) }}
+            {{ form_widget(sortieForm.descriptionInfos, {'attr': {'class': 'input input-bordered w-full max-w-xs', 'style': 'width:100%; height:150px;'}}) }}
+        </div>
+    </div>
+
+
+    <div class="col-start-4 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            <a href="{{ path('lieu_creer') }}"><button type="button" class="btn btn-active btn-accent">Ajouter un lieu</button></a>
+        </div>
+    </div>
+
+
+
+    <div class="col-start-2 col-span-2 ...">
+        <div class="flex items-center space-x-4">
+            {{ form_row(sortieForm.enregistrer, {'attr': {'class': 'btn glass bg-sky-800 text-white', 'type': 'submit', 'value': 'Enregistrer'}}) }}
+            {{ form_row(sortieForm.publier, {'attr': {'class': 'btn glass bg-sky-800 text-white', 'type': 'submit', 'value': 'Enregistrer'}}) }}
+        </div>
+
+        {{form_end(sortieForm)}}
+
+
+
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const lieuSelect = document.querySelector(".lieu-select");
+            const lieuDetails = document.getElementById("lieu-details");
+            const rueElement = document.getElementById("lieu-rue");
+            const villeElement = document.getElementById("lieu-ville");
+
+            lieuSelect.addEventListener("change", function() {
+                const selectedLieuId = lieuSelect.value;
+                const url = `/lieu/get-details/${selectedLieuId}`;
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Une erreur s'est produite: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        rueElement.textContent = data.rue;
+                        villeElement.textContent = data.ville.nom;
+                        lieuDetails.style.display = "block";
+                    })
+                    .catch(error => {
+                        console.error("Une erreur s'est produite lors de la récupération des détails du lieu:", error);
+                        rueElement.textContent = "";
+                        villeElement.textContent = "";
+                        lieuDetails.style.display = "block";
+                    });
+            });
+        });
+    </script>
+
+
+    {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#
+{% extends 'base.html.twig' %}
+
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
     <h1>Modifier une sortie</h1>
     <div class="col-md-9">
         {{ form_start(sortieForm) }}
@@ -65,3 +238,4 @@
     </script>
 {% endblock %}
 
+#}

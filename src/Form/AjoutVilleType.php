@@ -20,7 +20,7 @@ class AjoutVilleType extends AbstractType
                 'label' => 'Code Postal : '
             ])
             ->add('enregistrer', SubmitType::class, [
-                'label' => 'Ajouter'
+                'label' => 'Enregistrer'
             ])
         ;
     }

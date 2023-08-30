@@ -1,6 +1,65 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    {{ form_start(villeForm) }}
+
+    <div class="grid grid-cols-4 gap-6">
+
+        <div class="col-start-2 col-end-4 ...">
+            <h2 class="text-2xl font-semibold">Ajouter une ville</h2>
+        </div>
+
+
+        <div class="col-start-2 col-span-1 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(villeForm.nom, 'Nom * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(villeForm.nom, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+
+        <div class="col-start-2 col-span-1 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_label(villeForm.codePostal, 'Code postal * : ', {'label_attr': {'class': 'w-2/4'}}) }}
+                <p>{{ form_widget(villeForm.codePostal, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
+            </div>
+        </div>
+
+
+        <div class="col-start-2 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                {{ form_row(villeForm.enregistrer, {'attr': {'class': 'btn glass bg-sky-800 text-white', 'type': 'submit', 'value': 'Enregistrer'}}) }}
+                <a href="{{ path('lieu_creer') }}"><button type="button" class="btn glass bg-sky-800 text-white">Retour</button></a>
+            </div>
+
+
+
+
+
+
+        {{form_end(villeForm)}}
+
+    </div>
+
+{% endblock %}
+
+{% block title %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{#
+{% extends 'base.html.twig' %}
+
+{% block body %}
     <h1>Ajouter une ville</h1>
     <div class="col-md-9">
 
@@ -12,4 +71,4 @@
 {% block title %}
 
 {% endblock %}
-
+#}

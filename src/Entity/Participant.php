@@ -6,12 +6,17 @@ use App\Repository\ParticipantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
-#[Vich\Uploadable]
+
+
+
+
 #[ORM\Entity(repositoryClass: ParticipantRepository::class)]
+#[Vich\Uploadable]
 class Participant implements PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
@@ -49,20 +54,19 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
     private Collection $sorties;
 
-    #[ORM\Column]
-    private string $image;
+    #[Vich\UploadableField(mapping: 'participants', fileNameProperty: 'imageName', size: 'imageSize')]
+    private ?File $imageFile = null;
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
 
-    public function setImage(?string $image): self
-    {
-        $this->image = $image;
+    #[ORM\Column(nullable: true)]
+    private ?int $imageSize = null;
 
-        return $this;
-    }
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
+
 
     public function __construct()
     {
@@ -256,6 +260,75 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+    public function setImageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageName(?string $imageName): void
+    {
+        $this->imageName = $imageName;
+    }
+
+    public function getImageName(): ?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageSize(?int $imageSize): void
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    public function getImageSize(): ?int
+    {
+        return $this->imageSize;
+    }
+
+    public function __serialize():array
+    {
+        return [
+            'id' => $this->id,
+            'nom'=>$this->nom,
+            'prenom'=>$this->prenom,
+            'pseudo'=>$this->pseudo,
+            'telephone'=>$this->telephone,
+            'mail'=>$this->mail,
+            'motDePasse'=>$this->motDePasse,
+            'actif'=>$this->actif,
+            'role'=>$this->roles,
+            'imageName' => $this->imageName,
+            'imageSize' => $this->imageSize,
+            'updatedAt'=>$this->updatedAt
+        ];
+    }
+
+    public function __unserialize(array $data):void
+    {
+        $this->id = $data['id'];
+        $this->nom = $data['nom'];
+        $this->prenom = $data['prenom'];
+        $this->pseudo = $data['pseudo'];
+        $this->telephone = $data['telephone'];
+        $this->mail = $data['mail'];
+        $this->motDePasse = $data['motDePasse'];
+        $this->actif = $data['actif'];
+        $this->roles = $data['role'];
+        $this->imageName = $data['imageName'];
+        $this->imageSize = $data['imageSize'];
+        $this->updatedAt = $data['updatedAt'];
     }
 
 }

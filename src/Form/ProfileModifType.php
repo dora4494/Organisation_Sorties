@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\CallbackTransformer;
+use Vich\UploaderBundle\Form\Type\VichImageType;
+
 
 /**
  * @method getParameter(string $string)
@@ -23,25 +25,10 @@ class ProfileModifType extends AbstractType
             ->add('pseudo')
             ->add('telephone')
             ->add('mail')
-            ->add('image', FileType::class, [
+            ->add('imageFile', VichImageType::class, [
                 'label' => 'Image de profil',
                 'required' => false,
             ]);
-
-        $builder->get('image')->addModelTransformer(new CallbackTransformer(
-            function (?File $file) {
-                // Transformation de File à string
-                return $file;
-            },
-            function ($string) {
-                // Transformation de string à File
-                if ($string) {
-                    $filePath = $this->getParameter('images_directory') . '/' . $string;
-                    return new File($filePath);
-                }
-                return null; // retourne null si $string est vide
-            }
-        ));
     }
 
     public function configureOptions(OptionsResolver $resolver): void

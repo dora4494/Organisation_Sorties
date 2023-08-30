@@ -7,12 +7,12 @@
     <br>
     {{ form_start(profileModifForm) }}
 
-    {{ form_row(profileModifForm.nom, { 'label': 'Nom' }) }}
-    {{ form_row(profileModifForm.prenom, { 'label': 'Prénom' }) }}
-    {{ form_row(profileModifForm.pseudo, { 'label': 'Pseudo' }) }}
-    {{ form_row(profileModifForm.telephone, { 'label': 'Téléphone' }) }}
-    {{ form_row(profileModifForm.mail, { 'label': 'Email' }) }}
-    {{ form_row(profileModifForm.image, {'label': 'Image'}) }}
+    {{ form_row(profileModifForm.nom, { 'label': 'nom' }) }}
+    {{ form_row(profileModifForm.prenom, { 'label': 'prénom' }) }}
+    {{ form_row(profileModifForm.pseudo, { 'label': 'pseudo' }) }}
+    {{ form_row(profileModifForm.telephone, { 'label': 'téléphone' }) }}
+    {{ form_row(profileModifForm.mail, { 'label': 'email' }) }}
+    {{ form_row(profileModifForm.imageFile, {'label': 'image'}) }}
     <button type="submit" class="btn btn-primary">Create</button>
 
     {{ form_end(profileModifForm) }}

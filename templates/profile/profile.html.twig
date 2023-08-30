@@ -10,6 +10,8 @@
         <p>Téléphone : {{ app.user.telephone }}</p>
         {#<p>Sorties à venir : {{ app.user. }}</p>#}
         {#<p>Rôles : {{ user.roles|join(', ') }}</p>#}
+        <p><img src="{{ asset('images/user/' ~ app.user.imageName) }}" alt="Image de profil"></p>
+
     {% else %}
         <p>Vous n'êtes pas connecté</p>
     {% endif %}

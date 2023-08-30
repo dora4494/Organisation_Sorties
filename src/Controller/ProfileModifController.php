@@ -3,13 +3,13 @@
 namespace App\Controller;
 
 use App\Form\ProfileModifType;
-use ContainerAL90Cse\getProfileModifTypeService;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+
 
 
 class ProfileModifController extends AbstractController
@@ -24,11 +24,10 @@ class ProfileModifController extends AbstractController
             'images_directory' => $imagesDirectory,
         ]);
 
-        // Handle the form submission if the request is POST
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form['Image']->getData();
+            /*$imageFile = $form['imageFile']->getData();
             if ($imageFile) {
                 // Gérez l'upload du fichier ici, par exemple, en le déplaçant vers un répertoire d'images
                 $newFilename = uniqid().'.'.$imageFile->guessExtension();
@@ -40,18 +39,18 @@ class ProfileModifController extends AbstractController
                 );
 
                 // Mettez à jour la propriété "image" de l'entité Participant avec le nom du fichier
-                $this->getUser()->setImage($newFilename);
-            }
-            // Process the form data, e.g., update the user's profile
+                $this->getUser()->setImageFile($newFilename);*/
+
             $entityManager->persist($user);
             $entityManager->flush();
-            // Redirect to another page after processing the form
+
             return $this->redirectToRoute('app_profile');
         }
 
+
         return $this->render('profile/profileModif.html.twig', [
             'controller_name' => 'ProfileModifController',
-            'profileModifForm' => $form->createView(), // Pass the form to the template
+            'profileModifForm' => $form->createView(),
         ]);
 
     }

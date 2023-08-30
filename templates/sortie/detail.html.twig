@@ -78,12 +78,22 @@
             </div>
         </div>
 
+
         <div class="col-start-2 col-span-2 ...">
             <div class="flex items-center space-x-4">
                 <p class="w-2/4">Durée :</p>
                 <p class="w-2/4">{{ sortie.duree }} minutes</p>
             </div>
         </div>
+
+        {% if sortie.getEtatsNoEtat.getId == 6 %}
+        <div class="col-start-4 col-span-2 ...">
+            <div class="flex items-center space-x-4">
+                <p class="w-2/4">Motif d'annulation :  </p>
+                    {{ sortie.motifAnnulation }}
+            </div>
+        </div>
+        {% endif %}
 
         <div class="col-start-2 col-span-2 ...">
             <div class="flex items-center space-x-4">
@@ -165,5 +175,12 @@
             });
         });
     </script>
+
+
+
+
+
+
+
 
 {% endblock %}

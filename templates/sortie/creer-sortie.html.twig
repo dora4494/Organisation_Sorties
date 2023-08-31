@@ -17,14 +17,14 @@
 
     <div class="col-start-2 col-span-2 ...">
         <div class="flex items-center space-x-4">
-            {{ form_label(sortieForm.nom, 'Titre : ', {'label_attr': {'class': 'w-2/4'}}) }}
+            {{ form_label(sortieForm.nom, 'Titre * : ', {'label_attr': {'class': 'w-2/4'}}) }}
             <p>{{ form_widget(sortieForm.nom, {'attr': {'class': 'input input-bordered w-full max-w-xs'}}) }}</p>
         </div>
     </div>
 
     <div class="col-start-4 col-span-2 ...">
         <div class="flex items-center space-x-4">
-            {{ form_label(sortieForm.Site, 'Ville organisatrice : ', {'label_attr': {'class': 'w-2/4'}}) }}
+            {{ form_label(sortieForm.Site, 'Ville organisatrice * : ', {'label_attr': {'class': 'w-2/4'}}) }}
             <p>{{ form_widget(sortieForm.Site, {'attr': {'class': 'select select-bordered w-full max-w-xs'}}) }}</p>
         </div>
     </div>

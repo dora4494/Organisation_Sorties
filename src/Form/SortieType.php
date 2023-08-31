@@ -23,7 +23,7 @@ class SortieType extends AbstractType
                     ]
             ])
             ->add('dateHeureDebut', null, [
-                'label' => "Date et heure : ",
+                'label' => "Date et heure * : ",
                 'widget' => 'single_text',
                 'html5' => true,
                 'attr' => [
@@ -31,7 +31,7 @@ class SortieType extends AbstractType
                 ],
             ])
             ->add('dateCloture', null, [
-                'label' => "Date limite d'inscription : ",
+                'label' => "Date limite d'inscription * : ",
                 'widget' => 'single_text',
                 'html5' => true,
                 'attr' => [
@@ -39,10 +39,10 @@ class SortieType extends AbstractType
                 ],
             ])
             ->add('nbInscriptionsMax', null, [
-                'label' => 'Nombre de places : '
+                'label' => 'Nombre de places * : '
             ])
             ->add('duree', null, [
-                'label' => 'Durée (minutes) : ',
+                'label' => 'Durée (minutes) * : ',
                 'attr'=>['min'=>0]
             ])
             ->add('descriptionInfos', null, [
@@ -62,7 +62,7 @@ class SortieType extends AbstractType
             ->add('lieuxNoLieu', EntityType::class, [
                 'class' => Lieu::class,
                'choice_label' => 'nom',
-               'label' => 'Lieu : ',
+               'label' => 'Lieu * : ',
                'placeholder' => '--- Sélectionnez un lieu ---',
            ])
 

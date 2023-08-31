@@ -27,7 +27,7 @@ class Sortie
 
     #[ORM\Column(nullable: true)]
     #[Assert\NotBlank]
-    #[Assert\GreaterThan(0)]
+    #[Assert\Positive]
     private ?int $duree = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

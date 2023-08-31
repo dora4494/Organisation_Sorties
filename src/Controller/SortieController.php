@@ -14,10 +14,12 @@ use App\Repository\SortieRepository;
 use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use DateTime;
+
 //use Symfony\Component\Validator\Constraints\DateTime;
 
 
@@ -108,41 +110,57 @@ class SortieController extends AbstractController
 
     ): Response
     {
+        // Vérifier que le participant est connecté
+        try {
+            $participant = $this->getUser();
+            if (!$participant) {
+                throw new AccessDeniedException('Vous devez être connecté-e pour vous inscrire à une sortie ! ');
+            }
 
 
-        $etat = $sortie->getEtatsNoEtat()->getId();
-
-        $participant = $participantRepository->find($this->getUser());
-
-
-        // Vérifier la date de cloture, le nb d'inscription max, le statut 'ouvert' et que le user ne soit pas l'organisateur
-        if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() && $etat == 2 && $participant !== $sortie->getIdOrganisateur()) {
+            $etat = $sortie->getEtatsNoEtat()->getId();
 
             $participant = $participantRepository->find($this->getUser());
-            $sortie->addParticipant($participant);
 
-            // Si le nb d'inscrits est atteint ou que la date de clôture est dépassée
 
-            if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() < new DateTime('NOW')) {
-                $sortie->setEtatsNoEtat($etatRepository->find(3));
+            // Vérifier que le participant n'est pas déjà inscrit
+            if ($sortie->getParticipants()->contains($participant)) {
+                $this->addFlash('fail', 'Vous êtes déjà inscrit-e à cette sortie !');
+                return $this->redirectToRoute('listeSorties');
             }
 
+            // Vérifier la date de cloture, le nb d'inscription max, le statut 'ouvert' et que le user ne soit pas l'organisateur
+            if ($sortie->getDateCloture() > new DateTime('NOW') && $sortie->getNbInscriptionsMax() > $sortie->getParticipants()->count() && $etat == 2 && $participant !== $sortie->getIdOrganisateur()) {
 
-            $entityManager->persist($sortie);
+                $participant = $participantRepository->find($this->getUser());
+                $sortie->addParticipant($participant);
 
-            $entityManager->flush();
+                // Si le nb d'inscrits est atteint ou que la date de clôture est dépassée
 
-            $this->addFlash('success', 'Vous êtes inscrit-e à la sortie !');
-            return $this->redirectToRoute('listeSorties');
+                if ($sortie->getNbInscriptionsMax() == $sortie->getParticipants()->count() || $sortie->getDateCloture() < new DateTime('NOW')) {
+                    $sortie->setEtatsNoEtat($etatRepository->find(3));
+                }
 
-        } else {
-            if ($participant === $sortie->getIdOrganisateur()) {
-                $this->addFlash("fail", "En tant qu'organisateur-trice, vous ne pouvez pas vous inscrire !");
+
+                $entityManager->persist($sortie);
+
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Vous êtes inscrit-e à la sortie !');
+                return $this->redirectToRoute('listeSorties');
+
             } else {
-                $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e !");
+                if ($participant === $sortie->getIdOrganisateur()) {
+                    $this->addFlash("fail", "En tant qu'organisateur-trice, vous ne pouvez pas vous inscrire !");
+                } else {
+                    $this->addFlash("fail", "Vous n'avez pas pu être ajouté-e, la sortie n'est pas ouverte !");
+                }
+                return $this->redirectToRoute('listeSorties');
             }
-            return $this->redirectToRoute('listeSorties');
-
+            // Redirige l'utilisateur s'il n'est pas connecté
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('app_login');
         }
     }
 
@@ -157,41 +175,56 @@ class SortieController extends AbstractController
         Sortie                 $sortie
     ): Response
     {
-
-        $participant = $participantRepository->find($this->getUser());
-
-        if ($sortie->getParticipants()->contains($participant)) {
-
-
-            // Vérifier que la sortie n'a pas débuté
-            if ($sortie->getDateHeureDebut() > new \DateTime()) {
-
-
-                // Supprime la sortie du profil participant
-                $participant->removeSorty($sortie);
-
-                // Vérifier que la date de limite d'inscription n'est pas dépassée
-                if ($sortie->getDateCloture() > new \DateTime()) {
-                    // Supprime le participant de la sortie
-                    $sortie->removeParticipant($participant);
-                }
-                if ($sortie->getEtatsNoEtat()->getId() == 3) {
-                    $sortie->setEtatsNoEtat($entityManager->getRepository(Etat::class)->find(2));
-                }
-
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'Vous êtes désinscrit-e !');
+        // Vérifier que le participant est connecté
+        try {
+            $participant = $this->getUser();
+            if (!$participant) {
+                throw new AccessDeniedException('Vous devez être connecté-e pour vous désinscrire d\'une sortie ! ');
             }
-        } else {
-            $this->addFlash('error', 'Action impossible car vous n\'êtes pas inscrit-e !');
+
+
+            $participant = $participantRepository->find($this->getUser());
+
+            if ($sortie->getParticipants()->contains($participant)) {
+
+
+                // Vérifier que la sortie n'a pas débuté
+                if ($sortie->getDateHeureDebut() > new \DateTime()) {
+
+
+                    // Supprime la sortie du profil participant
+                    $participant->removeSorty($sortie);
+
+                    // Vérifier que la date de limite d'inscription n'est pas dépassée
+                    if ($sortie->getDateCloture() > new \DateTime()) {
+                        // Supprime le participant de la sortie
+                        $sortie->removeParticipant($participant);
+                    }
+                    if ($sortie->getEtatsNoEtat()->getId() == 3) {
+                        $sortie->setEtatsNoEtat($entityManager->getRepository(Etat::class)->find(2));
+                    }
+
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Vous êtes désinscrit-e !');
+                }
+            } else {
+                $this->addFlash('error', 'Action impossible car vous n\'êtes pas inscrit-e !');
+            }
+            return $this->redirectToRoute('listeSorties');
+
+
+            // Redirige l'utilisateur s'il n'est pas connecté
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('app_login');
         }
-        return $this->redirectToRoute('listeSorties');
     }
 
 
-    // Modifier une sortie
-    #[Route('/modifier/{sortie}', name: '_modifier')]
+// Modifier une sortie
+    #[
+        Route('/modifier/{sortie}', name: '_modifier')]
     public function modifier(
         EntityManagerInterface $entityManager,
         Request                $requete,
@@ -201,47 +234,62 @@ class SortieController extends AbstractController
     ): Response
     {
 
-        $participant = $participantRepository->find($this->getUser());
-
-        // Vérifier que le User est bien l'organisateur et que la sortie est à l'état "créée"
-        if ($participant === $sortie->getIdOrganisateur() && $sortie->getEtatsNoEtat()->getId() == 1) {
-
-            $sortieForm = $this->createForm(SortieType::class, $sortie);
-
-            $sortieForm->handleRequest($requete);
-
-            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-
-                // Si la sortie est "enregistrée"
-                if ($sortieForm->get('enregistrer')->isClicked()) {
-
-                    $sortie->setEtatsNoEtat($etatRepository->find(1));
-
-
-                    $entityManager->persist($sortie);
-                    $entityManager->flush();
-                    return $this->redirectToRoute('listeSorties');
-                }
-
-
-                // Si la sortie est "publiée"
-                if ($sortieForm->get('publier')->isClicked()) {
-                    $sortie->setEtatsNoEtat($etatRepository->find(2));
-
-
-                    $entityManager->persist($sortie);
-                    $entityManager->flush();
-                    return $this->redirectToRoute('listeSorties');
-                }
+        // Vérifier que le participant est connecté
+        try {
+            $participant = $this->getUser();
+            if (!$participant) {
+                throw new AccessDeniedException('Vous devez être connecté-e pour modifier votre sortie ! ');
             }
 
-        } else {
-            $this->addFlash('fail', 'Action impossible !');
-            return $this->redirectToRoute('listeSorties');
+
+            $participant = $participantRepository->find($this->getUser());
+
+            // Vérifier que le User est bien l'organisateur et que la sortie est à l'état "créée"
+            if ($participant === $sortie->getIdOrganisateur() && $sortie->getEtatsNoEtat()->getId() == 1) {
+
+                $sortieForm = $this->createForm(SortieType::class, $sortie);
+
+                $sortieForm->handleRequest($requete);
+
+                if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+                    // Si la sortie est "enregistrée"
+                    if ($sortieForm->get('enregistrer')->isClicked()) {
+
+                        $sortie->setEtatsNoEtat($etatRepository->find(1));
+
+
+                        $entityManager->persist($sortie);
+                        $entityManager->flush();
+                        return $this->redirectToRoute('listeSorties');
+                    }
+
+
+                    // Si la sortie est "publiée"
+                    if ($sortieForm->get('publier')->isClicked()) {
+                        $sortie->setEtatsNoEtat($etatRepository->find(2));
+
+
+                        $entityManager->persist($sortie);
+                        $entityManager->flush();
+                        return $this->redirectToRoute('listeSorties');
+                    }
+                }
+
+            } else {
+                $this->addFlash('fail', 'Action impossible !');
+                return $this->redirectToRoute('listeSorties');
+            }
+            return $this->render('sortie/modifier-sortie.html.twig', [
+                'sortieForm' => $sortieForm->createView(),
+            ]);
+
+            // Redirige l'utilisateur s'il n'est pas connecté
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('app_login');
+
         }
-        return $this->render('sortie/modifier-sortie.html.twig', [
-            'sortieForm' => $sortieForm->createView(),
-        ]);
     }
 
 
@@ -255,37 +303,49 @@ class SortieController extends AbstractController
         ParticipantRepository  $participantRepository
     ): Response
     {
-
-        $participant = $participantRepository->find($this->getUser());
-
-        // Vérifier que le User est bien l'organisateur
-        if ($participant === $sortie->getIdOrganisateur()) {
-
-
-            $annulerSortieForm = $this->createForm(AnnulerSortieType::class, $sortie);
-
-            $annulerSortieForm->handleRequest($requete);
-
-            if ($annulerSortieForm->isSubmitted() && $annulerSortieForm->isValid()) {
+        // Vérifier que le participant est connecté
+        try {
+            $participant = $this->getUser();
+            if (!$participant) {
+                throw new AccessDeniedException('Vous devez être connecté-e pour annuler votre sortie ! ');
+            }
 
 
-                $sortie->setEtatsNoEtat($etatRepository->find(6));
+            $participant = $participantRepository->find($this->getUser());
+
+            // Vérifier que le User est bien l'organisateur
+            if ($participant === $sortie->getIdOrganisateur()) {
 
 
-                $entityManager->persist($sortie);
-                $entityManager->flush();
+                $annulerSortieForm = $this->createForm(AnnulerSortieType::class, $sortie);
+
+                $annulerSortieForm->handleRequest($requete);
+
+                if ($annulerSortieForm->isSubmitted() && $annulerSortieForm->isValid()) {
+
+
+                    $sortie->setEtatsNoEtat($etatRepository->find(6));
+
+
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('listeSorties');
+                }
+            } else {
+                $this->addFlash('fail', 'Action impossible !');
                 return $this->redirectToRoute('listeSorties');
             }
-        } else {
-            $this->addFlash('fail', 'Action impossible !');
-            return $this->redirectToRoute('listeSorties');
+            return $this->render('sortie/annuler.html.twig', [
+                'annulerSortieForm' => $annulerSortieForm->createView(),
+                "sortie" => $sortie,]);
+
+            // Redirige l'utilisateur s'il n'est pas connecté
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('app_login');
         }
-        return $this->render('sortie/annuler.html.twig', [
-            'annulerSortieForm' => $annulerSortieForm->createView(),
-            "sortie" => $sortie,]);
+
     }
-
-
 
 
 // Supprimer une sortie - uniquement pour les sorties restées en état "enregistrée"
@@ -293,36 +353,49 @@ class SortieController extends AbstractController
     public function supprimer(
         EntityManagerInterface $entityManager,
         Sortie                 $sortie,
-        ParticipantRepository   $participantRepository,
-        EtatRepository          $etatRepository
+        ParticipantRepository  $participantRepository,
+        EtatRepository         $etatRepository
     ): Response
     {
+// Vérifier que le participant est connecté
+        try {
+            $participant = $this->getUser();
+            if (!$participant) {
+                throw new AccessDeniedException('Vous devez être connecté-e pour supprimer votre sortie ! ');
+            }
 
-        $participant = $participantRepository->find($this->getUser());
 
-        // Vérifier que le User est bien l'organisateur
-        if ($participant === $sortie->getIdOrganisateur() && $sortie->getEtatsNoEtat()->getId() == 1) {
+            $participant = $participantRepository->find($this->getUser());
 
-            // Modifie l'état en "supprimée"
-            $sortie->setEtatsNoEtat($etatRepository->find(8));
-            $participant->removeSorty($sortie);
-            $entityManager->persist($sortie);
-            $entityManager->flush();
-            $this->addFlash('success', 'La sortie a été supprimée');
-        } else {
-            $this->addFlash('fail', 'Action impossible !');
+            // Vérifier que le User est bien l'organisateur
+            if ($participant === $sortie->getIdOrganisateur() && $sortie->getEtatsNoEtat()->getId() == 1) {
+
+                // Modifie l'état en "supprimée"
+                $sortie->setEtatsNoEtat($etatRepository->find(8));
+                $participant->removeSorty($sortie);
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                $this->addFlash('success', 'La sortie a été supprimée');
+            } else {
+                $this->addFlash('fail', 'Action impossible !');
+            }
+
+            return $this->redirectToRoute('listeSorties');
+
+
+            // Redirige l'utilisateur s'il n'est pas connecté
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute('app_login');
         }
-
-        return $this->redirectToRoute('listeSorties');
     }
-
 
 
     // Lien vers le profil des personnes inscrites à une sortie
     #[Route('/profile/{id}', name: 'app_profile_inscrit')]
     public function profilInscrit(
-        int $id,
-        Sortie $sortie,
+        int                   $id,
+        Sortie                $sortie,
         ParticipantRepository $participantRepository
     ): Response
     {
@@ -333,8 +406,6 @@ class SortieController extends AbstractController
             'participant' => $participant
         ]);
     }
-
-
 
 
 }

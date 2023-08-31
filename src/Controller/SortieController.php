@@ -277,7 +277,7 @@ class SortieController extends AbstractController
                 }
 
             } else {
-                $this->addFlash('fail', 'Action impossible !');
+                $this->addFlash('fail', 'Action impossible : la sortie a déjà été publiée ou vous n\'êtes pas l\'organisateur-trice !');
                 return $this->redirectToRoute('listeSorties');
             }
             return $this->render('sortie/modifier-sortie.html.twig', [
@@ -293,7 +293,7 @@ class SortieController extends AbstractController
     }
 
 
-// Annuler une sortie
+    // Annuler une sortie
     #[Route('/annuler/{sortie}', name: '_annuler')]
     public function annuler(
         EntityManagerInterface $entityManager,
@@ -314,7 +314,7 @@ class SortieController extends AbstractController
             $participant = $participantRepository->find($this->getUser());
 
             // Vérifier que le User est bien l'organisateur
-            if ($participant === $sortie->getIdOrganisateur()) {
+            if ($participant === $sortie->getIdOrganisateur() && ($sortie->getEtatsNoEtat()->getId() == 2 || $sortie->getEtatsNoEtat()->getId() == 3)) {
 
 
                 $annulerSortieForm = $this->createForm(AnnulerSortieType::class, $sortie);
@@ -332,7 +332,7 @@ class SortieController extends AbstractController
                     return $this->redirectToRoute('listeSorties');
                 }
             } else {
-                $this->addFlash('fail', 'Action impossible !');
+                $this->addFlash('fail', 'Action impossible : la sortie n\'est pas/plus active ou vous n\'êtes pas l\'organisateur-trice !');
                 return $this->redirectToRoute('listeSorties');
             }
             return $this->render('sortie/annuler.html.twig', [
@@ -377,7 +377,7 @@ class SortieController extends AbstractController
                 $entityManager->flush();
                 $this->addFlash('success', 'La sortie a été supprimée');
             } else {
-                $this->addFlash('fail', 'Action impossible !');
+                $this->addFlash('fail', 'Action impossible : seules les sorties enregistrées peuvent être supprimées ou vous n\'êtes pas l\'organisateur-trice !');
             }
 
             return $this->redirectToRoute('listeSorties');

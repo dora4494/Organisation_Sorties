@@ -238,7 +238,7 @@ class SortieController extends AbstractController
         try {
             $participant = $this->getUser();
             if (!$participant) {
-                throw new AccessDeniedException('Vous devez être connecté-e pour modifier votre sortie ! ');
+                throw new AccessDeniedException('Vous devez être connecté-e pour modifier la sortie ! ');
             }
 
 

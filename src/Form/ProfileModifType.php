@@ -20,14 +20,28 @@ class ProfileModifType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
-            ->add('prenom')
-            ->add('pseudo')
-            ->add('telephone')
-            ->add('mail')
+            ->add('nom', null, [
+                'attr' => ['class' => 'h-10 border mt-1 rounded px-4 w-full bg-gray-50'],
+            ])
+            ->add('prenom', null, [
+                'attr' => ['class' => 'h-10 border mt-1 rounded px-4 w-full bg-gray-50'],
+            ])
+            ->add('pseudo', null, [
+                'attr' => ['class' => 'h-10 border mt-1 rounded px-4 w-full bg-gray-50'],
+            ])
+            ->add('mail', null, [
+                'attr' => ['class' => 'h-10 border mt-1 rounded px-4 w-full bg-gray-50'],
+            ])
+            ->add('telephone', null, [
+                'attr' => ['class' => 'h-10 border mt-1 rounded px-4 w-full bg-gray-50'],
+            ])
             ->add('imageFile', VichImageType::class, [
-                'label' => 'Image de profil',
+                'label' => false,
                 'required' => false,
+                'allow_delete' => false,
+                'download_uri' => false,
+                'image_uri' => false,
+                'attr' => ['class' => 'file-input file-input-bordered w-full max-w-xs'],
             ]);
     }
 

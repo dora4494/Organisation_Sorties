@@ -3,17 +3,73 @@
 {% block title %}Modifier mon profil{% endblock %}
 
 {% block body %}
-    <h1>Modifiez votre profil !</h1>
-    <br>
     {{ form_start(profileModifForm) }}
+    <div class="min-h-screen p-6 bg-gray-200 flex items-center justify-center">
+        <div class="container max-w-screen-lg mx-auto">
+            <div>
+                <div class="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+                    <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+                        <div class="text-gray-600">
+                            <p class="font-medium text-lg">Modification de profil</p>
+                            <p>Remplissez les champs que vous souhaitez modifier</p>
+                        </div>
 
-    {{ form_row(profileModifForm.nom, { 'label': 'nom' }) }}
-    {{ form_row(profileModifForm.prenom, { 'label': 'prénom' }) }}
-    {{ form_row(profileModifForm.pseudo, { 'label': 'pseudo' }) }}
-    {{ form_row(profileModifForm.telephone, { 'label': 'téléphone' }) }}
-    {{ form_row(profileModifForm.mail, { 'label': 'email' }) }}
-    {{ form_row(profileModifForm.imageFile, {'label': 'image'}) }}
-    <button type="submit" class="btn btn-primary">Create</button>
+                        <div class="lg:col-span-2">
+                            <div class="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-5">
+                                <div class="md:col-span-5">
+                                    {{ form_row(profileModifForm.nom, { 'label': 'Nom' }) }}
+                                </div>
 
+                                <div class="md:col-span-5">
+                                    {{ form_row(profileModifForm.prenom, { 'label': 'Prénom' }) }}
+                                </div>
+
+                                <div class="md:col-span-5">
+                                    {{ form_row(profileModifForm.pseudo, { 'label': 'Pseudo' }) }}
+                                </div>
+                                <div class="md:col-span-3">
+                                    {{ form_row(profileModifForm.mail, { 'label': 'Email' }) }}
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    {{ form_row(profileModifForm.telephone, { 'label': 'Téléphone' }) }}
+                                </div>
+
+                                <div class="md:col-span-5">
+                                    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
+                                    <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
+
+                                    <div x-data="{ photoName: null, photoPreview: null }" class="col-span-6 ml-2 sm:col-span-4 md:mr-3">
+                                        <label class="block text-gray-700 text-sm font-bold mb-2 text-center" for="{{ profileModifForm.imageFile.vars.id }}">
+                                            Photo de profil <span class="text-red-600"> </span>
+                                        </label>
+                                        <div class="text-center">
+                                            <!-- Current Profile Photo -->
+                                            <div class="mt-2" x-show="! photoPreview">
+                                                <img src="{{ asset('images/user/' ~ app.user.imageName) }}" class="w-40 h-40 m-auto rounded-full shadow">
+                                            </div>
+                                            <!-- New Profile Photo Preview -->
+                                            <div class="mt-2" x-show="photoPreview" style="display: none;">
+                                                <span class="block w-40 h-40 rounded-full m-auto shadow" x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('null');">
+                                                </span>
+                                            </div>
+                                            <br>
+                                            {{ form_widget(profileModifForm.imageFile, {'attr': ['x-on:click.prevent' , '"$refs.photo.click()"']}) }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="md:col-span-5 text-right">
+                                    <div class="inline-flex items-end">
+                                        <button type="submit" class="btn glass bg-sky-800 hover:bg-sky-600 text-white font-bold py-2 px-4 rounded">Modifier</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     {{ form_end(profileModifForm) }}
+
 {% endblock %}

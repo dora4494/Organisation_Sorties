@@ -66,11 +66,14 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'idOrganisateur')]
+    private Collection $sortiesOrganisees;
 
 
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
+        $this->sortiesOrganisees = new ArrayCollection();
     }
 
     /*
@@ -295,6 +298,30 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
     public function getImageSize(): ?int
     {
         return $this->imageSize;
+    }
+
+    public function getSortiesOrganisees(): Collection
+    {
+        return $this->sortiesOrganisees;
+    }
+
+    public function addSortieOrganisee(Sortie $sortie): static
+    {
+        if (!$this->sortiesOrganisees->contains($sortie)) {
+            $this->sortiesOrganisees->add($sortie);
+            $sortie->setIdOrganisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSortieOrganisee(Sortie $sortie): static
+    {
+        if ($this->sortiesOrganisees->removeElement($sortie)) {
+            $sortie->setIdOrganisateur(null);
+        }
+
+        return $this;
     }
 
     public function __serialize():array

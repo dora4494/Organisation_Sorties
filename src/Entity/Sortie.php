@@ -72,9 +72,12 @@ class Sortie
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $motifAnnulation = null;
 
+
     #[ORM\ManyToOne(targetEntity: Participant::class, inversedBy: 'sortiesOrganisees')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Participant $organisateur;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Participant $organisateur = null;
+
+
 
     public function __construct()
     {
@@ -266,6 +269,7 @@ class Sortie
         return $this;
     }
 
+
     public function getOrganisateur(): Participant
     {
         return $this->organisateur;
@@ -277,4 +281,6 @@ class Sortie
 
         return $this;
     }
+
+
 }

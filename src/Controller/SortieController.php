@@ -28,61 +28,80 @@ class SortieController extends AbstractController
 {
 
 
-    // Création d'une sortie
-    #[Route('/creer', name: '_creer')]
-    public function creer(
-        EntityManagerInterface $entityManager,
-        Request                $requete,
-        ParticipantRepository  $participantRepository,
-        EtatRepository         $etatRepository
-    ): Response
-    {
-        $sortie = new Sortie();
-
-        $sortieForm = $this->createForm(SortieType::class, $sortie);
-
-        $sortieForm->handleRequest($requete);
-
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-
-            // Si la sortie est "enregistrée"
-            if ($sortieForm->get('enregistrer')->isClicked()) {
-
-                $sortie->setEtatsNoEtat($etatRepository->find(1));
+        // Création d'une sortie
+        #[Route('/creer', name: '_creer')]
+        public function creer(
+            EntityManagerInterface $entityManager,
+            Request                $requete,
+            ParticipantRepository  $participantRepository,
+            EtatRepository         $etatRepository
+        ): Response
+        {
 
 
-                $sortie->setIdOrganisateur($participantRepository->find($this->getUser()));
+            // Vérifier que le participant est connecté
+            try {
+                $participant = $this->getUser();
+                if (!$participant) {
+                    throw new AccessDeniedException('Vous devez être connecté-e pour créer une sortie ! ');
+                }
 
 
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'Sortie enregistrée !');
-                return $this->redirectToRoute('listeSorties');
+            $sortie = new Sortie();
+
+            $sortieForm = $this->createForm(SortieType::class, $sortie);
+
+            $sortieForm->handleRequest($requete);
+
+            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+
+                // Si la sortie est "enregistrée"
+                if ($sortieForm->get('enregistrer')->isClicked()) {
+
+                    $sortie->setEtatsNoEtat($etatRepository->find(1));
+
+
+                    $sortie->setIdOrganisateur($participantRepository->find($this->getUser()));
+
+
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Sortie enregistrée !');
+                    return $this->redirectToRoute('listeSorties');
+                }
+
+
+                // Si la sortie est "publiée"
+                if ($sortieForm->get('publier')->isClicked()) {
+
+                    $sortie->setEtatsNoEtat($etatRepository->find(2));
+
+                    $sortie->setIdOrganisateur($participantRepository->find($this->getUser()));
+
+                    //  $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
+                    // $sortie->setIdOrganisateur($organisateur);
+
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    $this->addFlash('success', 'Sortie publiée !');
+                    return $this->redirectToRoute('listeSorties');
+                }
+
+
             }
-
-
-            // Si la sortie est "publiée"
-            if ($sortieForm->get('publier')->isClicked()) {
-
-                $sortie->setEtatsNoEtat($etatRepository->find(2));
-
-                $sortie->setIdOrganisateur($participantRepository->find($this->getUser()));
-
-                //  $organisateur = $participantRepository->find($this->getUser()->getUserIdentifier());
-                // $sortie->setIdOrganisateur($organisateur);
-
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                $this->addFlash('success', 'Sortie publiée !');
-                return $this->redirectToRoute('listeSorties');
+            return $this->render('sortie/creer-sortie.html.twig', [
+                'sortieForm' => $sortieForm->createView(),
+            ]);
+                // Redirige l'utilisateur s'il n'est pas connecté
+            } catch (AccessDeniedException $e) {
+                $this->addFlash('error', $e->getMessage());
+                return $this->redirectToRoute('app_login');
             }
-
 
         }
-        return $this->render('sortie/creer-sortie.html.twig', [
-            'sortieForm' => $sortieForm->createView(),
-        ]);
-    }
+
+
+
 
 
     // Détails d'une sortie

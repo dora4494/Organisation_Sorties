@@ -66,6 +66,7 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+
     #[ORM\OneToMany(targetEntity: Sortie::class, mappedBy: 'idOrganisateur')]
     private Collection $sortiesOrganisees;
 
@@ -323,6 +324,8 @@ class Participant implements PasswordAuthenticatedUserInterface, UserInterface
 
         return $this;
     }
+
+
 
     public function __serialize():array
     {
